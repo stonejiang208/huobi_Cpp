@@ -4,13 +4,12 @@
 #include <vector>
 #include <list>
 #include <string>
-//#include "Huobi/PriceDepth.h"
+#include "Huobi/PriceDepth.h"
 //#include "Huobi/Account.h"
 //#include "Huobi/NewOrderRequest.h"
 #include "Huobi/Candlestick.h"
-#include "Huobi/CandlestickRequest.h"
 #include "Huobi/Trade.h"
-//#include "Huobi/TradeStatistics.h"
+#include "Huobi/TradeStatistics.h"
 //#include "Huobi/ExchangeInfo.h"
 //#include "Huobi/BestQuote.h"
 //#include "Huobi/Withdraw.h"
@@ -71,15 +70,11 @@ namespace Huobi {
          *                 (mandatory)
          * \return The list of candlestick/kline data.
          */
-        virtual void getLatestCandlestick(const std::string &symbol,
-                                          const CandlestickInterval &interval,
-                                          int size,
-                                          long startTime,
-                                          long endTime,
-                                          const std::function<void(vector<Candlestick>)> &callback,
-                                          const std::function<void(
-                                                  HuobiApiException & )> &errorHandler = std::function<void(
-                                                  HuobiApiException & )>()) = 0;
+        virtual std::vector<Candlestick> getLatestCandlestick(const char *symbol,
+                                                              CandlestickInterval interval,
+                                                              int size = 150,
+                                                              long startTime = 0,
+                                                              long endTime = 0) = 0;
         /**
          * Get the last trade with their price, volume and direction.
          *
@@ -94,11 +89,8 @@ namespace Huobi {
          * \param size   The  number of historical trade requested, range [1 - 2000] (mandatory)
          * \return The list of trade.
          */
-        virtual void getHistoricalTrade(const char* symbol, int size,
-                                                      const std::function<void(vector<Trade>)> &callback,
-                                                      const std::function<void(
-                                                              HuobiApiException & )> &errorHandler = std::function<void(
-                                                              HuobiApiException & )>()) = 0;
+        virtual std::vector<Trade> getHistoricalTrade(const char *symbol, int size) = 0;
+
         /**
          * Get the Market Depth of a symbol.
          *
@@ -106,11 +98,7 @@ namespace Huobi {
          * \param size   The maximum number of Market Depth requested. range [1 - 150] (mandatory)
          * \return Market Depth data.
          */
-        virtual void getPriceDepth(const char *symbol, int size,
-                                   const std::function<void(PriceDepth)> &callback,
-                                   const std::function<void(
-                                           HuobiApiException & )> &errorHandler = std::function<void(
-                                           HuobiApiException & )>()) = 0;
+        virtual PriceDepth getPriceDepth(const char *symbol, int size) = 0;
         /**
          * Get 20 levels of Market Depth of a symbol.
          *
@@ -124,7 +112,7 @@ namespace Huobi {
          * \param symbol The symbol, like "btcusdt". (mandatory)
          * \return Trade statistics.
          */
-//        virtual TradeStatistics get24HTradeStatistics(const char* symbol) = 0;
+        virtual TradeStatistics get24HTradeStatistics(const char *symbol) = 0;
         /**
          * Get all the trading assets and currencies supported in huobi.pro. The information of trading
          * instrument, including base currency, quote precision, etc.

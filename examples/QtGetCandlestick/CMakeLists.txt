@@ -60,7 +60,7 @@ if (APPLE)
     set(CMAKE_PREFIX_PATH /usr/local/opt/qt5)
 endif ()
 
-PROJECT(GetCandlestickData)
+PROJECT(GetCandlestick)
 
 AUX_SOURCE_DIRECTORY(. DIR_SRCS)
 ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS})

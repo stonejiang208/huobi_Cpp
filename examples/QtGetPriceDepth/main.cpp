@@ -18,18 +18,18 @@ int main(int argc, char **argv) {
 
     RestClient *client = createRestClient();
 
-    client->getPriceDepth("btcusdt", 5, [](PriceDepth depth) {
-        int i = 0;
-        cout << "---- Top 5 bids ----" << endl;
-        for (DepthEntry entry : depth.bids) {
-            cout << i++ << ": price: " << entry.price << ", amount: " << entry.amount << endl;
-        }
-        i = 0;
-        cout << "---- Top 5 asks ----" << endl;
-        for (DepthEntry entry : depth.asks) {
-            cout << i++ << ": price: " << entry.price << ", amount: " << entry.amount << endl;
-        }
-    });
+    PriceDepth depth = client->getPriceDepth("btcusdt", 5);
+
+    int i = 0;
+    cout << "---- Top 5 bids ----" << endl;
+    for (DepthEntry entry : depth.bids) {
+        cout << i++ << ": price: " << entry.price << ", amount: " << entry.amount << endl;
+    }
+    i = 0;
+    cout << "---- Top 5 asks ----" << endl;
+    for (DepthEntry entry : depth.asks) {
+        cout << i++ << ": price: " << entry.price << ", amount: " << entry.amount << endl;
+    }
 
     return a.exec();
 }

@@ -18,19 +18,7 @@ namespace Huobi {
         ~QtHttpClient();
 
     public:
-        void get(QUrl url);
-
-        bool post(QUrl url, QByteArray &bytes);
-
-    Q_SIGNALS:
-
-        void received(QJsonObject jsonObject);
-
-    public slots:
-        void replyFinished(QNetworkReply *reply);
-
-    private:
-        QNetworkAccessManager m_pManager;
+        QJsonObject get(QUrl url);
     };
 }
 

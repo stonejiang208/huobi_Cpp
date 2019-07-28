@@ -1,14 +1,5 @@
 #include "QtRestClientImpl.h"
-#include <iostream>
-#include <QtCore/QDebug>
-#include <QtCore/QUrl>
-#include <QtCore/QJsonObject>
-#include <QtCore/QString>
-#include "Utils/QtDecimalTool.h"
 
-
-using namespace std;
-using namespace Huobi;
 
 QT_USE_NAMESPACE
 
@@ -30,27 +21,11 @@ namespace Huobi {
         m_pHttpClientList.clear();
     }
 
-//    std::vector<Candlestick> QtRestClientImpl::getCandlestick(const CandlestickRequest &request) {
-//        QList<QString> topics = QtChannel::candlestickChannel(symbols, interval);
-//        m_url = m_marketUrl;
-
-//        auto *pClient = new QtWebSocketClient(QUrl(QString::fromStdString(m_url)), topics);
-//        connect(pClient, &QtWebSocketClient::received, this, &QtSubscribeClientImpl::onReceivedCandlestickEvent);
-//        connect(this, &QtSubscribeClientImpl::callbackSignalCandlestickEvent, this, callback);
-
-//        QList<QtWebSocketClient *> wsclist;
-//        wsclist.append(pClient);
-//        m_pClientList.append(wsclist);
-//    }
-
-    void QtRestClientImpl::getLatestCandlestick(const std::string &symbol,
-                                                const CandlestickInterval &interval,
-                                                int size,
-                                                long startTime,
-                                                long endTime,
-                                                const std::function<void(vector<Candlestick>)> &callback,
-                                                const std::function<void(
-                                                        HuobiApiException &)> &errorHandler) {
+    std::vector<Candlestick> QtRestClientImpl::getLatestCandlestick(const char *symbol,
+                                                                    CandlestickInterval interval,
+                                                                    int size,
+                                                                    long startTime,
+                                                                    long endTime) {
         InputChecker::checker()
                 ->checkSymbol(symbol)
                 ->checkRange(size, 1, 2000, "size");
@@ -67,45 +42,10 @@ namespace Huobi {
         query.addQueryItem("end", QString::number(endTime));
         url.setQuery(query);
 
-        qDebug() << url;
-
         auto pHttpClient = new QtHttpClient();
-        connect(pHttpClient, &QtHttpClient::received, this, &QtRestClientImpl::onReceivedCandlestick);
-        connect(this, &QtRestClientImpl::callbackSignalCandlestick, this, callback);
 
-        pHttpClient->get(url);
-        m_pHttpClientList.append(pHttpClient);
-    }
+        QJsonObject jsonObject = pHttpClient->get(url);
 
-    void QtRestClientImpl::getHistoricalTrade(const char *symbol, int size,
-                                              const std::function<void(vector<Trade>)> &callback,
-                                              const std::function<void(
-                                                      HuobiApiException &)> &errorHandler) {
-        InputChecker::checker()
-                ->checkSymbol(symbol)
-                ->checkRange(size, 1, 2000, "size");
-
-        m_url = m_marketUrl;
-        QString path = "/market/history/trade";
-        QUrl url(QString::fromStdString(m_url) + path);
-
-        QUrlQuery query;
-        query.addQueryItem("symbol", QString::fromStdString(symbol));
-        query.addQueryItem("size", QString::number(size));
-        url.setQuery(query);
-
-        qDebug() << url;
-
-        auto pHttpClient = new QtHttpClient();
-        connect(pHttpClient, &QtHttpClient::received, this, &QtRestClientImpl::onReceivedHistoricalTrade);
-        connect(this, &QtRestClientImpl::callbackSignalHistoricalTrade, this, callback);
-
-        pHttpClient->get(url);
-        m_pHttpClientList.append(pHttpClient);
-    }
-
-    void QtRestClientImpl::onReceivedCandlestick(QJsonObject jsonObject) {
-        cout << "收到信号" << endl;
         QJsonDocument jsonDocument(jsonObject);
         QVariantMap result = jsonDocument.toVariant().toMap();
 
@@ -126,13 +66,29 @@ namespace Huobi {
                 event.push_back(candlestick);
             }
 
+        m_pHttpClientList.append(pHttpClient);
 
-        cout << "发送信号" << endl;
-        emit callbackSignalCandlestick(event);
+        return event;
     }
 
-    void QtRestClientImpl::onReceivedHistoricalTrade(QJsonObject jsonObject) {
-        cout << "收到信号" << endl;
+    std::vector<Trade> QtRestClientImpl::getHistoricalTrade(const char *symbol, int size) {
+        InputChecker::checker()
+                ->checkSymbol(symbol)
+                ->checkRange(size, 1, 2000, "size");
+
+        m_url = m_marketUrl;
+        QString path = "/market/history/trade";
+        QUrl url(QString::fromStdString(m_url) + path);
+
+        QUrlQuery query;
+        query.addQueryItem("symbol", QString::fromStdString(symbol));
+        query.addQueryItem("size", QString::number(size));
+        url.setQuery(query);
+
+        auto pHttpClient = new QtHttpClient();
+
+        QJsonObject jsonObject = pHttpClient->get(url);
+
         QJsonDocument jsonDocument(jsonObject);
         QVariantMap result = jsonDocument.toVariant().toMap();
 
@@ -154,31 +110,12 @@ namespace Huobi {
             }
 
 
-        cout << "发送信号" << endl;
-        emit callbackSignalHistoricalTrade(event);
+        m_pHttpClientList.append(pHttpClient);
+
+        return event;
     }
 
-
-//    void QtSubscribeClientImpl::subscribeTradeEvent(
-//            const char *symbols,
-//            const std::function<void(const TradeEvent &)> &callback,
-//            const std::function<void(HuobiApiException &)> &errorHandler) {
-//        QList<QString> topics = QtChannel::tradeChannel(symbols);
-//        m_url = m_marketUrl;
-//        auto *pClient = new QtWebSocketClient(QUrl(QString::fromStdString(m_url)), topics);
-//        connect(pClient, &QtWebSocketClient::received, this, &QtSubscribeClientImpl::onReceivedTradeEvent);
-//        connect(this, &QtSubscribeClientImpl::callbackSignalTradeEvent, this, callback);
-//
-//        QList<QtWebSocketClient *> wsclist;
-//        wsclist.append(pClient);
-//        m_pClientList.append(wsclist);
-//    }
-
-
-    void QtRestClientImpl::getPriceDepth(
-            const char *symbol, int size,
-            const std::function<void(PriceDepth)> &callback,
-            const std::function<void(HuobiApiException &)> &errorHandler) {
+    PriceDepth QtRestClientImpl::getPriceDepth(const char *symbol, int size) {
         InputChecker::checker()->checkSymbol(symbol)->checkRange(size, 1, 150, "size");
 
         m_url = m_marketUrl;
@@ -192,124 +129,10 @@ namespace Huobi {
 
         url.setQuery(query);
 
-        qDebug() << url;
-
         auto pHttpClient = new QtHttpClient();
-        connect(pHttpClient, &QtHttpClient::received, this, &QtRestClientImpl::onReceivedPriceDepth);
-        connect(this, &QtRestClientImpl::callbackSignalPriceDepth, this, callback);
 
-        pHttpClient->get(url);
-        m_pHttpClientList.append(pHttpClient);
-    }
+        QJsonObject jsonObject = pHttpClient->get(url);
 
-//    void QtSubscribeClientImpl::subscribe24HTradeStatisticsEvent(
-//            const char *symbols,
-//            const std::function<void(const TradeStatisticsEvent &)> &callback,
-//            const std::function<void(HuobiApiException &)> &errorHandler) {
-//        QList<QString> topics = QtChannel::tradeStatisticsChannel(symbols);
-//        m_url = m_marketUrl;
-//
-//        auto *pClient = new QtWebSocketClient(QUrl(QString::fromStdString(m_url)), topics);
-//        connect(pClient, &QtWebSocketClient::received, this, &QtSubscribeClientImpl::onReceivedTradeStatisticsEvent);
-//        connect(this, &QtSubscribeClientImpl::callbackSignalTradeStatisticsEvent, this, callback);
-//
-//        QList<QtWebSocketClient *> wsclist;
-//        wsclist.append(pClient);
-//        m_pClientList.append(wsclist);
-//    }
-
-//    void QtSubscribeClientImpl::subscribeOrderUpdateEvent(
-//            const char *symbols,
-//            const std::function<void(const OrderUpdateEvent &)> &callback,
-//            const std::function<void(HuobiApiException &)> &errorHandler) {
-//        QList<QString> topics = QtChannel::orderUpdateChannel(symbols);
-//        QString authTopic = QtChannel::authChannel(m_host, m_accessKey, m_secretKey);
-//        m_url = m_tradeUrl;
-//        auto *pClient = new QtWebSocketClient(QUrl(QString::fromStdString(m_url)), topics,authTopic);
-//        connect(pClient, &QtWebSocketClient::received, this, &QtSubscribeClientImpl::onReceivedOrderUpdateEvent);
-//        connect(this, &QtSubscribeClientImpl::callbackSignalOrderUpdateEvent, this, callback);
-//
-//        QList<QtWebSocketClient *> wsclist;
-//        wsclist.append(pClient);
-//        m_pClientList.append(wsclist);
-//    }
-
-//    void QtSubscribeClientImpl::subscribeAccountEvent(
-//            const BalanceMode &mode,
-//            const std::function<void(const AccountEvent &)> &callback,
-//            const std::function<void(HuobiApiException &)> &errorHandler) {
-//        QList<QString> topics = QtChannel::accountChannel(mode);
-//        QString authTopic = QtChannel::authChannel(m_host, m_accessKey, m_secretKey);
-//        m_url = m_tradeUrl;
-//        auto *pClient = new QtWebSocketClient(QUrl(QString::fromStdString(m_url)), topics, authTopic);
-//        connect(pClient, &QtWebSocketClient::received, this, &QtSubscribeClientImpl::onReceivedAccountEvent);
-//        connect(this, &QtSubscribeClientImpl::callbackSignalAccountEvent, this, callback);
-//
-//        QList<QtWebSocketClient *> wsclist;
-//        wsclist.append(pClient);
-//        m_pClientList.append(wsclist);
-//    }
-
-//    void QtSubscribeClientImpl::onReceivedCandlestickEvent(QJsonObject jsonObject) {
-//        cout << "收到信号" << endl;
-//        QJsonDocument jsonDocument(jsonObject);
-//        QVariantMap result = jsonDocument.toVariant().toMap();
-//
-//        CandlestickEvent event;
-//
-//        QString ch = result["ch"].toString();
-//
-//        event.symbol = ch.split('.').at(1).toStdString();
-//        event.interval = CandlestickInterval::lookup(ch.split('.').at(3).toStdString());
-//        event.timestamp = TimeService::convertCSTInMillisecondToUTC(result["ts"].toULongLong());
-//
-//        QVariantMap tick = result["tick"].toMap();
-//
-//        Candlestick data;
-//        data.timestamp = TimeService::convertCSTInSecondToUTC(tick["id"].toULongLong());
-//        data.amount = QtDecimalTool::toDecimal(tick["amount"]);
-//        data.close = QtDecimalTool::toDecimal(tick["close"]);
-//        data.high = QtDecimalTool::toDecimal(tick["high"]);
-//        data.low = QtDecimalTool::toDecimal(tick["low"]);
-//        data.open = QtDecimalTool::toDecimal(tick["open"]);
-//        data.volume = QtDecimalTool::toDecimal(tick["vol"]);
-//        data.count = tick["count"].toULongLong();
-//        event.data = data;
-//
-//        cout << "发送信号" << endl;
-//        emit callbackSignalCandlestickEvent(event);
-//    }
-
-//    void QtSubscribeClientImpl::onReceivedTradeEvent(QJsonObject jsonObject) {
-//        cout << "收到信号" << endl;
-//        QJsonDocument jsonDocument(jsonObject);
-//        QVariantMap result = jsonDocument.toVariant().toMap();
-//
-//        TradeEvent event;
-//
-//        QString ch = result["ch"].toString();
-//        event.symbol = ch.split('.').at(1).toStdString();
-//        event.timestamp = TimeService::convertCSTInMillisecondToUTC(result["ts"].toULongLong());
-//
-//        QVariantMap tick = result["tick"].toMap();
-//                foreach (QVariant data, tick["data"].toList()) {
-//                QVariantMap item = data.toMap();
-//                Trade trade;
-//                trade.amount = QtDecimalTool::toDecimal(item["amount"]);
-//                trade.price = QtDecimalTool::toDecimal(item["price"]);
-//                trade.tradeId = item["id"].toString().toStdString();
-//                trade.direction = TradeDirection::lookup(item["direction"].toString().toStdString());
-//                trade.timestamp = TimeService::convertCSTInMillisecondToUTC(item["ts"].toULongLong());
-//                event.tradeList.push_back(trade);
-//            }
-//
-//        cout << "发送信号" << endl;
-//        emit callbackSignalTradeEvent(event);
-//    }
-
-
-    void QtRestClientImpl::onReceivedPriceDepth(QJsonObject jsonObject) {
-        cout << "收到信号" << endl;
         QJsonDocument jsonDocument(jsonObject);
         QVariantMap result = jsonDocument.toVariant().toMap();
 
@@ -336,96 +159,51 @@ namespace Huobi {
         event.bids = bidsves;
         event.asks = asksves;
 
-        cout << "发送信号" << endl;
-        emit callbackSignalPriceDepth(event);
+        m_pHttpClientList.append(pHttpClient);
+
+        return event;
     }
 
-//    void QtSubscribeClientImpl::onReceivedTradeStatisticsEvent(QJsonObject jsonObject) {
-//        cout << "收到信号" << endl;
-//        QJsonDocument jsonDocument(jsonObject);
-//        QVariantMap result = jsonDocument.toVariant().toMap();
-//
-//        TradeStatisticsEvent event;
-//
-//        QString ch = result["ch"].toString();
-//
-//        event.symbol = ch.split('.').at(1).toStdString();
-//        long ts = TimeService::convertCSTInMillisecondToUTC(result["ts"].toULongLong());
-//        event.timestamp = ts;
-//        QVariantMap tick = result["tick"].toMap();
-//
-//        TradeStatistics statistics;
-//        statistics.amount = QtDecimalTool::toDecimal(tick["amount"]);
-//        statistics.open = QtDecimalTool::toDecimal(tick["open"]);
-//        statistics.close = QtDecimalTool::toDecimal(tick["close"]);
-//        statistics.high = QtDecimalTool::toDecimal(tick["high"]);
-//        statistics.timestamp = ts;
-//        statistics.count = tick["count"].toULongLong();
-//        statistics.low = QtDecimalTool::toDecimal(tick["low"]);
-//        statistics.volume = QtDecimalTool::toDecimal(tick["vol"]);
-//        event.tradeStatistics = statistics;
-//
-//        cout << "发送信号" << endl;
-//        emit callbackSignalTradeStatisticsEvent(event);
-//    }
 
-//    void QtSubscribeClientImpl::onReceivedOrderUpdateEvent(QJsonObject jsonObject) {
-//        cout << "收到信号" << endl;
-//        QJsonDocument jsonDocument(jsonObject);
-//        QVariantMap result = jsonDocument.toVariant().toMap();
-//
-//        OrderUpdateEvent event;
-//
-//        QString topic = result["topic"].toString();
-//
-//        event.symbol = topic.split('.').at(1).toStdString();
-//        event.timestamp = TimeService::convertCSTInMillisecondToUTC(result["ts"].toULongLong());
-//        QVariantMap data = result["data"].toMap();
-//
-//        Order order;
-//        order.orderId = data["order-id"].toULongLong();
-//        order.symbol = data["symbol"].toString().toStdString();
-//        order.accountType = AccountsInfoMap::getAccount(m_accessKey, data["account-id"].toULongLong()).type;
-//        order.amount = QtDecimalTool::toDecimal(data["order-amount"]);
-//        order.price = QtDecimalTool::toDecimal(data["order-price"]);
-//        order.createdTimestamp = TimeService::convertCSTInMillisecondToUTC(data["created-at"].toULongLong());
-//        order.type = OrderType::lookup(data["order-type"].toString().toStdString());
-//        order.filledAmount = QtDecimalTool::toDecimal(data["filled-amount"]);
-//        order.filledCashAmount = QtDecimalTool::toDecimal(data["filled-cash-amount"]);
-//        order.filledFees = QtDecimalTool::toDecimal(data["filled-fees"]);
-//        order.state = OrderState::lookup(data["order-state"].toString().toStdString());
-//        order.source = OrderSource::lookup(data["order-source"].toString().toStdString());
-//        event.data = order;
-//
-//        cout << "发送信号" << endl;
-//        emit callbackSignalOrderUpdateEvent(event);
-//    }
+    TradeStatistics QtRestClientImpl::get24HTradeStatistics(const char *symbol) {
 
-//    void QtSubscribeClientImpl::onReceivedAccountEvent(QJsonObject jsonObject) {
-//        cout << "收到信号" << endl;
-//        QJsonDocument jsonDocument(jsonObject);
-//        QVariantMap result = jsonDocument.toVariant().toMap();
-//
-//        AccountEvent event;
-//
-//        QVariantMap data = result["data"].toMap();
-//        event.changeType = AccountChangeType::lookup(data["event"].toString().toStdString());
-//        event.timestamp = TimeService::convertCSTInMillisecondToUTC(data["ts"].toULongLong());
-//                foreach (QVariant l, data["list"].toList()) {
-//                QVariantMap item = l.toMap();
-//
-//                AccountChange change;
-//                change.accountType = AccountsInfoMap::getAccount(m_accessKey, item["account-id"].toULongLong()).type;
-//                change.currency = item["currency"].toString().toStdString();
-//                change.balance = QtDecimalTool::toDecimal(item["balance"]);
-//                change.balanceType = BalanceType::lookup(item["type"].toString().toStdString());
-//                event.accountChangeList.push_back(change);
-//            }
-//
-//
-//        cout << "发送信号" << endl;
-//        emit callbackSignalAccountEvent(event);
-//    }
+        InputChecker::checker()->checkSymbol(symbol);
+
+        m_url = m_marketUrl;
+
+        QString path = "/market/detail";
+        QUrl url(QString::fromStdString(m_url) + path);
+
+        QUrlQuery query;
+        query.addQueryItem("symbol", QString::fromStdString(symbol));
+
+        url.setQuery(query);
+
+        auto pHttpClient = new QtHttpClient();
+
+        QJsonObject jsonObject = pHttpClient->get(url);
+
+        QJsonDocument jsonDocument(jsonObject);
+        QVariantMap result = jsonDocument.toVariant().toMap();
+
+        TradeStatistics event;
+
+        long ts = TimeService::convertCSTInMillisecondToUTC(result["ts"].toULongLong());
+        QVariantMap tick = result["tick"].toMap();
+
+        event.amount = QtDecimalTool::toDecimal(tick["amount"]);
+        event.open = QtDecimalTool::toDecimal(tick["open"]);
+        event.close = QtDecimalTool::toDecimal(tick["close"]);
+        event.high = QtDecimalTool::toDecimal(tick["high"]);
+        event.timestamp = ts;
+        event.count = tick["count"].toULongLong();
+        event.low = QtDecimalTool::toDecimal(tick["low"]);
+        event.volume = QtDecimalTool::toDecimal(tick["vol"]);
+
+        m_pHttpClientList.append(pHttpClient);
+
+        return event;
+    }
 }
 
 

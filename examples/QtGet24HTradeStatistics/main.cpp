@@ -5,7 +5,7 @@
  */
 
 #include "Huobi/HuobiClient.h"
-#include<iostream>
+#include <iostream>
 #include<vector>
 #include <QtCore/QCoreApplication>
 #include <QDebug>
@@ -18,15 +18,14 @@ int main(int argc, char **argv) {
 
     RestClient *client = createRestClient();
 
-    vector<Trade> tradeVes = client->getHistoricalTrade("btcusdt", 5);
-    cout << "---- Historical trade for btcusdt ----" << endl;
-    for (Trade trade : tradeVes) {
-        cout << "Trade at: " << trade.timestamp << endl;
-        cout << "Id: " << trade.tradeId << endl;
-        cout << "Price: " << trade.price << endl;
-        cout << "Amount: " << trade.amount << endl;
-        cout << "Direction: " << trade.direction.getValue() << endl;
-    }
+    TradeStatistics statistics = client->get24HTradeStatistics("btcusdt");
+    cout << "---- Statistics ----" << endl;
+    cout << "Timestamp: " << statistics.timestamp << endl;
+    cout << "High: " << statistics.high << endl;
+    cout << "Low: " << statistics.low << endl;
+    cout << "Open: " << statistics.open << endl;
+    cout << "Close: " << statistics.close << endl;
+    cout << "Volume: " << statistics.volume << endl;
 
     return a.exec();
 }
