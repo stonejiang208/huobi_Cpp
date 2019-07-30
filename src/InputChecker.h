@@ -125,10 +125,10 @@ namespace Huobi {
 
         InputChecker* checkList(std::list<T> list, int min, int max, std::string name) {
             if (list .size() != 0) {
-                if (list.size() > max) {
+                if (list.size() > static_cast<size_t>(max)) {
                     throw HuobiApiException(HuobiApiException::INPUT_ERROR,
                             "[Input] " + name + " is out of bound, the max size is " + std::to_string(max));
-                } else if (list.size() < min) {
+                } else if (list.size() < static_cast<size_t>(min)) {
                     throw HuobiApiException(HuobiApiException::INPUT_ERROR,
                             "[Input] " + name + " should contain " + std::to_string(min) + " item(s) at least");
                 }

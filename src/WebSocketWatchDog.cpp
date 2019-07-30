@@ -34,7 +34,7 @@ namespace Huobi {
                             lwsl_user("time....\n");
                             time_t ts = TimeService::getCurrentTimeStamp() - connection->getLastReceivedTime();
                             if (ts > op.receiveLimitMs) {
-                                Logger::WriteLog(" No response from server");
+                                Logger::LogWarning(" No response from server");
                                 lwsl_user("auto recon\n");
                                 connection->reConnect(op.connectionDelayOnFailure);
                             }

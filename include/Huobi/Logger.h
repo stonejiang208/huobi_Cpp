@@ -10,22 +10,26 @@
 
 namespace Huobi {
 
-
     class Logger {
-       
     public:
-        static int log;
-        static std::string log_file_locate;
-        static FILE* log_fp;
-    public:
-        static void WriteLog(const char *msg,...);
-        static void setlogMode(int mode);
+
+        enum LogLevel {
+            DEBUG = 1,
+            INFO = 2,
+            WARNING = 3,
+            CRITICAL = 4
+        };
+
+        static void LogDebug(const char* msg, ...);
+        static void LogWarning(const char* msg, ...);
+        static void LogCritical(const char* msg, ...);
+        static void LogInfo(const char* msg, ...);
+
+        static void EnableShowLogToSTDOUT(bool enabled);
+        static void SetLogLevel(LogLevel level);
         static void setLogfilelocate(std::string &pDebug_log_file);
 
     };
-
 }
-
-
 #endif /* LOGGER_H */
 
