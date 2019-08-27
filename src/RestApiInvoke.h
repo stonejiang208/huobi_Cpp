@@ -6,6 +6,7 @@
 #include "Utils/JsonDocument.h"
 #include "EtfResult.h"
 #include "Huobi/HuobiApiException.h"
+#include "Huobi/Logger.h"
 #include "Utils/Singleton.h"
 
 #include <boost/beast/core.hpp>
