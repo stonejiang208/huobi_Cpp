@@ -52,6 +52,15 @@ RUN yum install -y devtoolset-7-llvm
 #支持中文
 RUN  yum install -y kde-l10n-Chinese telnet && yum reinstall -y glibc-common && yum clean all  &&  localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 
+#安装boost
+RUN yum install -y boost169 boost169-devel
+
+#安装cmake3
+RUN yum install -y http://repo.okay.com.mx/centos/7/x86_64/release/okay-release-1-1.noarch.rpm
+RUN yum install -y cmake3
+RUN yum remove -y cmake
+RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
+
 #升级
 RUN yum -y  upgrade
 

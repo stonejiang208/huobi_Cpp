@@ -98,6 +98,7 @@ FIND_PATH(
 include_directories(./include)
 include_directories(${LIBDECNUMBER_INCLUDE_DIR})
 include_directories(/usr/local/include)
+include_directories(/usr/include/boost169)
 
 if (APPLE)
     include_directories(/usr/local/opt/openssl/include)
