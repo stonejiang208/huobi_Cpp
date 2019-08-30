@@ -45,7 +45,6 @@ if (APPLE)
 endif ()
 
 
-
 if (LINUX)
     message(STATUS "当前操作系统: Linux")
 endif ()
@@ -67,60 +66,60 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS})
 
 IF (CMAKE_BUILD_TYPE MATCHES "Release")
     SET(CMAKE_BUILD_POSTFIX ${CMAKE_BUILD_TYPE})
-ELSEIF(CMAKE_BUILD_TYPE MATCHES "Debug")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "Debug")
     SET(CMAKE_BUILD_POSTFIX ${CMAKE_BUILD_TYPE})
-ELSE()
+ELSE ()
     MESSAGE(FATAL_ERROR "The CMAKE_BUILD_TYPE only supports Release or Debug")
-ENDIF()
+ENDIF ()
 
 
 find_library(LIBHUOBICLIENT_PATH HuobiClient)
-IF(NOT LIBHUOBICLIENT_PATH)
-message(${HUOBI_CLIENT_DIR}/lib/${CMAKE_BUILD_POSTFIX})
-MESSAGE(FATAL_ERROR "HuobiClient not found")
-ENDIF(NOT LIBHUOBICLIENT_PATH)
+IF (NOT LIBHUOBICLIENT_PATH)
+    message(${HUOBI_CLIENT_DIR}/lib/${CMAKE_BUILD_POSTFIX})
+    MESSAGE(FATAL_ERROR "HuobiClient not found")
+ENDIF (NOT LIBHUOBICLIENT_PATH)
 MESSAGE(STATUS ${LIBHUOBICLIENT_PATH} " found")
 
 
 find_library(LIBSSL_PATH ssl)
-IF(NOT LIBSSL_PATH)
-MESSAGE(FATAL_ERROR "libssl not found")
-ENDIF(NOT LIBSSL_PATH) 
+IF (NOT LIBSSL_PATH)
+    MESSAGE(FATAL_ERROR "libssl not found")
+ENDIF (NOT LIBSSL_PATH)
 MESSAGE(STATUS ${LIBSSL_PATH} " found")
 
 find_library(LIBCRYPTO_PATH crypto)
-IF(NOT LIBCRYPTO_PATH)
-MESSAGE(FATAL_ERROR "libcrypto not found")
-ENDIF(NOT LIBCRYPTO_PATH) 
+IF (NOT LIBCRYPTO_PATH)
+    MESSAGE(FATAL_ERROR "libcrypto not found")
+ENDIF (NOT LIBCRYPTO_PATH)
 MESSAGE(STATUS ${LIBCRYPTO_PATH} " found")
 
 
 find_library(LIBZ_PATH z)
-IF(NOT LIBZ_PATH)
-MESSAGE(FATAL_ERROR "z not found")
-ENDIF(NOT LIBZ_PATH) 
+IF (NOT LIBZ_PATH)
+    MESSAGE(FATAL_ERROR "z not found")
+ENDIF (NOT LIBZ_PATH)
 MESSAGE(STATUS ${LIBZ_PATH} " found")
 
 find_library(LIBPTHREAD_PATH pthread)
-IF(NOT LIBPTHREAD_PATH)
+IF (NOT LIBPTHREAD_PATH)
     MESSAGE(FATAL_ERROR "pthread not found")
-ENDIF(NOT LIBPTHREAD_PATH)
+ENDIF (NOT LIBPTHREAD_PATH)
 MESSAGE(STATUS ${LIBPTHREAD_PATH} " found")
 
 find_library(LIBDECNUMBER_PATH decnumber)
-IF(NOT LIBDECNUMBER_PATH)
-MESSAGE(FATAL_ERROR "decnumber not found")
-ENDIF(NOT LIBDECNUMBER_PATH) 
+IF (NOT LIBDECNUMBER_PATH)
+    MESSAGE(FATAL_ERROR "decnumber not found")
+ENDIF (NOT LIBDECNUMBER_PATH)
 MESSAGE(STATUS ${LIBDECNUMBER_PATH} " found")
 
 find_package(Qt5 COMPONENTS Core WebSockets Network REQUIRED)
 
 
 FIND_PATH(
-    LIBDECNUMBER_INCLUDE_DIR
-    decNumber.h 
-    /usr/include/decnumber/
-    /usr/local/include/decnumber/
+        LIBDECNUMBER_INCLUDE_DIR
+        decNumber.h
+        /usr/include/decnumber/
+        /usr/local/include/decnumber/
 )
 include_directories(${LIBDECNUMBER_INCLUDE_DIR})
 include_directories(/usr/local/include)
