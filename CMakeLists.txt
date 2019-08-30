@@ -163,6 +163,3 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY include/ DESTINATION include
         FILES_MATCHING PATTERN "*.h")
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cert/cert.pem
-        DESTINATION "/etc/huobi_cert/"
-        )
