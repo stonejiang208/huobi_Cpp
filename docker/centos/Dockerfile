@@ -46,8 +46,8 @@ RUN yum install -y qt5-qtbase qt5-qtbase-devel qt5-qtbase-common qt5-qtwebsocket
 #单元测试
 RUN yum install -y gtest gtest-devel gmock gmock-devel
 
-#clang 最低3.4.2 最高5.0.1 此处使用5.0.1
-RUN yum install -y devtoolset-7-llvm
+#gcc
+RUN yum install -y devtoolset-8
 
 #支持中文
 RUN  yum install -y kde-l10n-Chinese telnet && yum reinstall -y glibc-common && yum clean all  &&  localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
@@ -83,14 +83,14 @@ RUN echo "127.0.1.1 $(hostname)" >> /etc/hosts
 USER $NB_USER
 
 #安装libdecnumber
-RUN source /opt/rh/llvm-toolset-7/enable && cd $USER_HOME && git clone https://github.com/huobiapi/libdecnumber.git && cd libdecnumber && mkdir build && cd build && cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_COMPILER_TYPE=CLANG && make && sudo make install && sudo rm -rf $USER_HOME/libdecnumber
+RUN source /opt/rh/devtoolset-8/enable && cd $USER_HOME && git clone https://github.com/huobiapi/libdecnumber.git && cd libdecnumber && mkdir build && cd build && cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_COMPILER_TYPE=GCC && make && sudo make install && sudo rm -rf $USER_HOME/libdecnumber
 
 #刷新库文件
 RUN sudo ldconfig
 
 # Setup jovyan home directory
 RUN mkdir $WORK_DIR && mkdir $USER_HOME/.local
-RUN echo "source /opt/rh/llvm-toolset-7/enable" >> $USER_HOME/.bashrc
+RUN echo "source /opt/rh/devtoolset-8/enable" >> $USER_HOME/.bashrc
 
 
 WORKDIR $WORK_DIR

@@ -73,7 +73,7 @@ Please make sure the CMake is installed on your OS.
 
 If not, you can follow <https://cmake.org/install/> to install it.
 
-The minimum required version of CMake is 2.8, but we suggest to use the lastest CMake version.
+The minimum required version of CMake is 3.0, but we suggest to use the lastest CMake version.
 
 #### Install 3rd party
 
@@ -81,21 +81,14 @@ Please make sure the 3rd party libraries have been installed in your system. If 
 
 OpenSSL - <https://github.com/openssl/openssl>
 
-curl - <https://github.com/curl/curl>
-
-libwebsocket - <https://libwebsockets.org/git/libwebsockets/tree/?h=v3.1-stable>
-
 
 #### 安装依赖包
 
 ubuntu 18.04:
 ````
-$ sudo apt install cmake
+$ sudo apt install cmake3
 #openssl 1.1.1
-$ sudo apt install openssl
-$ sudo apt install libssl-dev
-#curl
-$ sudo apt install curl libcurl4-openssl-dev
+$ sudo apt install openssl libssl-dev
 #zip
 $ sudo apt install zlib1g-dev
 #Qt
@@ -105,14 +98,13 @@ $ sudo apt install qt5-default libqt5websockets5-dev libqt5websockets5
 centos 7   
 
 ````
-$ sudo yum install cmake
+# cmake 3
+$ sudo yum install http://repo.okay.com.mx/centos/7/x86_64/release/okay-release-1-1.noarch.rpm
+$ sudo yum install cmake3
+$ sudo ln -s /usr/bin/cmake3 /usr/bin/cmake
 #openssl 1.0.2
 $ sudo yum install openssl openssl-devel
-#curl
-$ sudo yum install libcurl libcurl-devel
-#libwebsockets v3.1.0
 $ sudo yum install epel-release
-$ sudo yum install libwebsockets libwebsockets-devel
 #zip
 $ sudo yum install zlib zlib-devel
 #Qt
@@ -121,13 +113,10 @@ $ sudo yum install qt5-qtbase qt5-qtbase-devel qt5-qtbase-common qt5-qtwebsocket
 $ sudo yum install centos-release-scl-rh centos-release-scl scl-utils-build scl-utils
 $ sudo yum check-update
 
-#安装clang 最低3.4.2 最高5.0.1 此处使用5.0.1
-$ sudo yum install devtoolset-7-llvm
-$ echo "source /opt/rh/llvm-toolset-7/enable" >> $HOME/.bashrc
-$ source $HOME/.bashrc
-#安装gcc 最低4.9.2 最高7.3.1 此处使用7.3.1
-$ sudo yum install devtoolset-7-toolchain
-$ echo "source /opt/rh/devtoolset-7/enable" >> $HOME/.bashrc
+#编译器
+#安装gcc 此处使用8.3.1
+$ sudo yum install devtoolset-8-toolchain
+$ echo "source /opt/rh/devtoolset-8/enable" >> $HOME/.bashrc
 $ source $HOME/.bashrc
 ````
 
@@ -136,10 +125,6 @@ macOS 10.14.5
 ````
 #openssl 1.0.2
 $ brew install openssl
-#libwebsockets v3.1.0
-$ brew install libwebsockets
-#curl
-$ brew install curl curl-openssl
 #zlib
 $ brew install zlib
 #Qt
@@ -148,21 +133,6 @@ $ brew install qt
 $ brew install --HEAD https://gist.githubusercontent.com/huobiapi/e81f3714d37c7d92c3e9e6b6566a4cbe/raw/39f1a42024cecb40d0436b03acd67c0abe6d9571/gtest.rb
 ````
 
-
-
-从源码编译安装libwebsockets v3.1.0:
-
-参考: <https://libwebsockets.org/>
-````
-$ git clone https://github.com/warmcat/libwebsockets.git
-$ git reset --hard 89eedcaa94e1c8a97ea3af10642fd224bcea068f
-$ cd libwebsockets
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-$ sudo make install
-````
 
 #### Build SDK
 
