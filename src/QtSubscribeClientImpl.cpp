@@ -254,7 +254,7 @@ namespace Huobi {
         Order order;
         order.orderId = data["order-id"].toULongLong();
         order.symbol = data["symbol"].toString().toStdString();
-        order.accountType = AccountsInfoMap::getAccount(m_accessKey, data["account-id"].toULongLong()).type;
+//        order.accountType = AccountsInfoMap::getAccount(m_accessKey, data["account-id"].toULongLong()).type;
         order.amount = QtDecimalTool::toDecimal(data["order-amount"]);
         order.price = QtDecimalTool::toDecimal(data["order-price"]);
         order.createdTimestamp = TimeService::convertCSTInMillisecondToUTC(data["created-at"].toULongLong());
@@ -284,7 +284,7 @@ namespace Huobi {
                 QVariantMap item = l.toMap();
 
                 AccountChange change;
-                change.accountType = AccountsInfoMap::getAccount(m_accessKey, item["account-id"].toULongLong()).type;
+//                change.accountType = AccountsInfoMap::getAccount(m_accessKey, item["account-id"].toULongLong()).type;
                 change.currency = item["currency"].toString().toStdString();
                 change.balance = QtDecimalTool::toDecimal(item["balance"]);
                 change.balanceType = BalanceType::lookup(item["type"].toString().toStdString());

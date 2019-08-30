@@ -31,9 +31,6 @@ RUN yum install -y perl-core
 #压缩
 RUN yum install -y  zlib zlib-devel
 
-#下载
-RUN yum install -y  curl libcurl-devel
-
 #网络
 RUN yum install -y  net-tools
 
@@ -42,9 +39,6 @@ RUN yum install -y  vim
 
 #加密
 RUN yum install -y openssl openssl-devel
-
-#安装libwebsockets v3.1.0
-RUN yum install -y libwebsockets libwebsockets-devel
 
 #Qt
 RUN yum install -y qt5-qtbase qt5-qtbase-devel qt5-qtbase-common qt5-qtwebsockets qt5-qtwebsockets-devel
