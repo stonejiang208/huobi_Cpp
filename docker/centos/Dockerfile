@@ -13,6 +13,10 @@ RUN yum check-update -y
 
 #使用redhat源
 RUN yum install -y epel-release
+
+#增加源
+RUN yum install -y http://repo.okay.com.mx/centos/7/x86_64/release/okay-release-1-1.noarch.rpm
+
 RUN yum update -y
 
 
@@ -21,7 +25,6 @@ RUN yum install -y sudo
 
 #编译
 RUN yum install -y git
-RUN yum install -y cmake
 RUN yum install -y libtool
 RUN yum install -y perl-core
 
@@ -54,6 +57,10 @@ RUN yum install -y devtoolset-7-llvm
 
 #支持中文
 RUN  yum install -y kde-l10n-Chinese telnet && yum reinstall -y glibc-common && yum clean all  &&  localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+
+#安装cmake3
+RUN yum install -y cmake3
+RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
 
 #升级
 RUN yum -y  upgrade

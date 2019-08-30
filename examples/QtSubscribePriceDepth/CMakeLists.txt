@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-cmake_policy(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
+cmake_policy(VERSION 3.0)
 
 #设置编译器
 IF (CMAKE_COMPILER_TYPE MATCHES "GCC")
