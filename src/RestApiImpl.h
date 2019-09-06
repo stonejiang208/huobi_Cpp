@@ -45,7 +45,8 @@ namespace Huobi {
     class RestApiImpl {
     private:
 
-        std::string TradingUrl = "https://api.huobi.pro:443";
+       // std::string TradingUrl = "https://api.huobi.pro:443";
+         std::string TradingUrl = "https://api.huobi.com:443";
         std::string MarketQueryUrl = "https://api.huobi.pro:443";
 
         std::string subscriptionMarketUrl = "wss://api.huobi.pro:443/ws";

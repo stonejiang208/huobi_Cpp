@@ -117,6 +117,9 @@ namespace Huobi {
                     local->tm_hour,
                     local->tm_min,
                     local->tm_sec);
+          
+            std::cout<<"---------------------"<<std::endl;
+            std::cout<<timeBuf<<std::endl;
             std::string code = escapeURL(CreateSignature(host, accessKey, secretKey, adress, method, timeBuf, param));
             std::string res = "";
             res +=
