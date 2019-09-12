@@ -26,6 +26,7 @@ namespace Huobi {
         WebSocketsService() : ssl_(boost::asio::ssl::context::sslv23_client) {
             ssl_.load_verify_file("/etc/huobi_cert/cert.pem");
         };
+        
     private:
         WebSocketsService(const WebSocketsService& orig);
 
@@ -44,9 +45,11 @@ namespace Huobi {
             io_.stop();
         }
 
-        //        void createConnection(WebSocketRequest* request) {
-        //            
-        //        }
+        void createConnection(WebSocketRequest* request) {
+
+        }
+        
+        
 
         boost::asio::io_context& getIO() {
             return io_;
@@ -55,6 +58,8 @@ namespace Huobi {
         boost::asio::ssl::context& getSSL() {
             return ssl_;
         };
+        
+
     private:
         boost::asio::io_context io_;
         boost::asio::ssl::context ssl_;

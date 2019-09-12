@@ -13,7 +13,7 @@ namespace Huobi {
             return &obj;
         }
 
-        Logger::LogLevel log_level_ = Logger::INFO;
+        Logger::LogLevel log_level_ = Logger::DEBUG;
         std::string log_file_locate_ = "./huobi.log";
         FILE* log_fp_ = nullptr;
         bool enable_to_stdout_ = true;

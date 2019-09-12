@@ -5,6 +5,7 @@
 #include <mutex>
 #include "TimeService.h"
 #include "Huobi/SubscriptionOptions.h"
+#include "WebSocketConnection.h"
 
 
 namespace Huobi {
@@ -13,18 +14,20 @@ namespace Huobi {
      
     class WebSocketWatchDog {
     private:
-        SubscriptionOptions op;
+        SubscriptionOptions op_;
         
     public:   
+        typedef std::list<WebSocketConnectHanlder> WebSocketConnectList;
+        
         WebSocketWatchDog(SubscriptionOptions &op);
         void WatchDogThread();
         bool isRunning() const{ return runningFlag; }
-        void onConnectionCreated(WebSocketConnection* connection);
-        void onClosedNormally(WebSocketConnection* connection);
+        void onConnectionCreated(WebSocketConnectHanlder connection);
+        void onClosedNormally(WebSocketConnectHanlder connection);
 
         
     private:
-        std::list<WebSocketConnection*> connectionList;
+        WebSocketConnectList connectionList_;
         std::mutex mutex;
         bool runningFlag;
         std::thread dogthread;

@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <libwebsockets.h>
 
 #include "WebSocketApiImpl.h"
 #include "AccountsInfoMap.h"
@@ -26,7 +25,6 @@ namespace Huobi {
         req->connectionHandler = [symbols, interval](WebSocketConnection * connection) {
             for (std::string symbol : symbols) {
                 connection->send(Channels::klineChannel(symbol, interval));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         };
         req->JsonParser = [interval](const JsonWrapper& json) {
@@ -63,7 +61,6 @@ namespace Huobi {
         req->connectionHandler = [symbols](WebSocketConnection * connection) {
             for (std::string symbol : symbols) {
                 connection->send(Channels::tradeChannel(symbol));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         };
 
@@ -104,7 +101,6 @@ namespace Huobi {
         req->connectionHandler = [symbols](WebSocketConnection * connection) {
             for (std::string symbol : symbols) {
                 connection->send(Channels::priceDepthChannel(symbol));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         };
 
@@ -156,7 +152,6 @@ namespace Huobi {
         req->connectionHandler = [symbols](WebSocketConnection * connection) {
             for (std::string symbol : symbols) {
                 connection->send(Channels::tradeStatisticsChannel(symbol));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         };
 
@@ -197,7 +192,6 @@ namespace Huobi {
         req->connectionHandler = [symbols](WebSocketConnection * connection) {
             for (std::string symbol : symbols) {
                 connection->send(Channels::orderChannel(symbol));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         };
 

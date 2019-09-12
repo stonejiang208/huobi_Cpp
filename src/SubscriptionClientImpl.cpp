@@ -82,7 +82,7 @@ namespace Huobi {
         }
         Logger::LogInfo("createConnection");
         auto connection = std::make_shared<WebSocketConnection>(
-                this->apiKey, this->secretKey, request, dog,context_, host);
+                this->apiKey, this->secretKey, request,context_, host);
         connectionList.push_back(connection);
     }
 
