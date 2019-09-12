@@ -1,7 +1,6 @@
 #ifndef RESTAPIINVOKE_H
 #define RESTAPIINVOKE_H
 #include <memory>
-#include <curl/curl.h>
 #include "RestApi.h"
 #include "Utils/JsonDocument.h"
 #include "EtfResult.h"

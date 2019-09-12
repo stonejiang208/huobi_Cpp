@@ -27,30 +27,30 @@ namespace Huobi {
             for (std::list<WebSocketConnection*>::iterator it = connectionList.begin(); it != connectionList.end(); ++it) {
                 WebSocketConnection* connection = *it;
                 LineStatus lineStatus = connection->getLineStatus();
-                if (lineStatus == LineStatus::LINE_ACTIVE) {
-                    // Check response
-                    if (op.isAutoReconnect) {
-                        if (connection->getConnectState() == ConnectionStatus::CONNECTED) {
-                            lwsl_user("time....\n");
-                            time_t ts = TimeService::getCurrentTimeStamp() - connection->getLastReceivedTime();
-                            if (ts > op.receiveLimitMs) {
-                                Logger::LogWarning(" No response from server");
-                                lwsl_user("auto recon\n");
-                                connection->reConnect(op.connectionDelayOnFailure);
-                            }
-                        } else if (connection->getConnectState() == ConnectionStatus::CLOSED) {
-                            lwsl_user("check close, try reconnect...\n");
-                            connection->reConnect(op.connectionDelayOnFailure);
-                        } else {
-                            lwsl_user("unknown...\n");
-                        }
-                    }
-                } else if (lineStatus == LineStatus::LINE_DELAY) {
-                    lwsl_user("delay....\n");
-                    connection->reConnect();
-                } else {
-                    lwsl_user("else...\n");
-                }
+//                if (lineStatus == LineStatus::LINE_CONNECTED) {
+//                    // Check response
+//                    if (op.isAutoReconnect) {
+//                        if (connection->getConnectState() == ConnectionStatus::CONNECTED) {
+//                            lwsl_user("time....\n");
+//                            time_t ts = TimeService::getCurrentTimeStamp() - connection->getLastReceivedTime();
+//                            if (ts > op.receiveLimitMs) {
+//                                Logger::LogWarning(" No response from server");
+//                                lwsl_user("auto recon\n");
+//                                connection->reConnect(op.connectionDelayOnFailure);
+//                            }
+//                        } else if (connection->getConnectState() == ConnectionStatus::CLOSED) {
+//                            lwsl_user("check close, try reconnect...\n");
+//                            connection->reConnect(op.connectionDelayOnFailure);
+//                        } else {
+//                            lwsl_user("unknown...\n");
+//                        }
+//                    }
+//                } else if (lineStatus == LineStatus::LINE_DELAY) {
+//                    lwsl_user("delay....\n");
+//                    connection->reConnect();
+//                } else {
+//                    lwsl_user("else...\n");
+//                }
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }

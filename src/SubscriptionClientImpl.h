@@ -7,6 +7,7 @@
 #include "WebSocketApiImpl.h"
 #include "WebSocketRequest.h"
 #include "WebSocketConnection.h"
+#include "WebSockets/WebSocketsService.h"
 #include "WebSocketWatchDog.h"
 #include "Huobi/RequestOptions.h"
 #include "GetHost.h"
@@ -20,15 +21,15 @@ namespace Huobi {
         std::string apiKey;
         std::string secretKey;
         WebSocketApiImpl *impl;
-        std::list<WebSocketConnection*> connectionList;
+        std::list<std::shared_ptr<WebSocketConnection>> connectionList;
         SubscriptionOptions op;
         std::string host = "api.huobi.pro";
-        WebSocketWatchDog* dog;
-
+        WebSocketWatchDog* dog = nullptr;
+        WebSocketsService* context_;
     public:
         void startService() override;
 
-        SubscriptionClientImpl() {
+        SubscriptionClientImpl(): dog(nullptr) {
             apiKey = "";
             secretKey = "";
             impl = new WebSocketApiImpl(apiKey, secretKey);
