@@ -17,8 +17,6 @@
 #include "Huobi/Logger.h"
 #include "Huobi/Enums.h"
 
-#include "WebSockets/WebSocketsService.h"
-
 #include "Utils/JsonWrapper.h"
 #include "Utils/gzip.h"
 #include "WebSocketRequest.h"
@@ -26,6 +24,8 @@
 
 namespace Huobi {
 
+    class WebSocketsService;
+    
     typedef enum LINESTATUS {
         LINE_CONNECTED, // Connected to server, assume the line status is fine.
         LINE_IDEL, // Initialize status, or closed by normal case, such as manually close.
@@ -34,11 +34,6 @@ namespace Huobi {
         LINE_DISCONNECTING, // Disconnecting from server, not finished yet. Once finished, it will be changed to LINE_IDEL.
         LINE_DELAY, // Trying to re-connect to server, but still in delay time.
     } LineStatus;
-
-    typedef enum CONNECTIONSTATUS {
-        CONNECTED,
-        CLOSED,
-    } ConnectionStatus;
 
     namespace beast = boost::beast; // from <boost/beast.hpp>
     namespace asio = boost::asio; // from <boost/asio.hpp>
@@ -49,11 +44,8 @@ namespace Huobi {
     class WebSocketConnection : public std::enable_shared_from_this<WebSocketConnection> {
     public:
         WebSocketConnection(
-                const std::string& apiKey,
-                const std::string& secretKey,
                 WebSocketRequest* request,
-                WebSocketsService* context,
-                std::string host);
+                WebSocketsService* service);
 
         void connect();
         void disconnect();
@@ -94,7 +86,7 @@ namespace Huobi {
         std::string subscriptionTradingUrl = "wss://api.huobi.pro/ws/v1";
         int connectionId;
 
-        WebSocketsService* context_;
+        WebSocketsService* service_;
 
         net::tcp::resolver resolver_;
         beast::websocket::stream<

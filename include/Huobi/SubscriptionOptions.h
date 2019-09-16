@@ -22,7 +22,7 @@ namespace Huobi {
        /*
         *support set url by user
         */
-       std::string url;
+       std::string url = "https://api.huobi.pro";
 
     };
 

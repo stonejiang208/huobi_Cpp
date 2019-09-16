@@ -15,25 +15,9 @@
 namespace Huobi {
 
     class WebSocketApiImpl {
-    private:
-        std::string accessKey;
-        std::string secretKey;
-        
     public:
 
         WebSocketApiImpl() {
-        }
-
-        WebSocketApiImpl(std::string accessKey,
-                std::string secretKey) {
-            this->accessKey = accessKey;
-            this->secretKey = secretKey;
-        }
-
-       
-
-        std::string getAccessKey() {
-            return accessKey;
         }
 
         WebSocketRequest* subscribeCandlestickEvent(

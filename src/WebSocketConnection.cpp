@@ -5,6 +5,9 @@
 #include "TimeService.h"
 #include <ctime>
 #include <stdbool.h>
+
+#include <WebSockets/WebSocketsService.h>
+
 namespace Huobi {
 
     void fail(beast::error_code ec, char const* what) {
@@ -14,15 +17,12 @@ namespace Huobi {
     int WebSocketConnection::connectionCounter = 0;
 
     WebSocketConnection::WebSocketConnection(
-            const std::string& apiKey,
-            const std::string& secretKey,
             WebSocketRequest* request,
-            WebSocketsService* context,
-            std::string host) : request(request), resolver_(asio::make_strand(context->getIO())), ws_(asio::make_strand(context->getIO()), context->getSSL()) {
-        this->apiKey = apiKey;
-        this->secretKey = secretKey;
-        this->host = host;
-        this->context_ = context;
+            WebSocketsService* service)
+    : request(request)
+    , resolver_(asio::make_strand(context->getIO()))
+    , ws_(asio::make_strand(context->getIO()), context->getSSL()) {
+        this->service_ = service;
         this->connectionId = connectionCounter++;
         lineStatus_ = LineStatus::LINE_IDEL;
         if (host.find("api") == 0) {
@@ -309,7 +309,6 @@ namespace Huobi {
 
     void WebSocketConnection::disconnect() {
         Logger::LogInfo("[Sub][%d] Disconnected", connectionId);
-        //connectStatus = ConnectionStatus::CLOSED;
     }
 
     void WebSocketConnection::close() {

@@ -17,38 +17,31 @@ namespace Huobi {
 
     class SubscriptionClientImpl : public SubscriptionClient {
     private:
-
-        std::string apiKey;
-        std::string secretKey;
-        WebSocketApiImpl *impl;
-        std::list<std::shared_ptr<WebSocketConnection>> connectionList;
-        SubscriptionOptions op;
-        std::string host = "api.huobi.pro";
-        WebSocketWatchDog* dog = nullptr;
-        WebSocketsService* context_;
+        WebSocketApiImpl *impl = nullptr;
+        WebSocketsServiceHanlder service_;
     public:
         void startService() override;
 
-        SubscriptionClientImpl(): dog(nullptr) {
-            apiKey = "";
-            secretKey = "";
-            impl = new WebSocketApiImpl(apiKey, secretKey);
+        SubscriptionClientImpl() {
+            impl = new WebSocketApiImpl();
+            service_ = std::make_shared<WebSocketsService>();
+            service_->initialize("", "", SubscriptionOptions());
         }
 
-        SubscriptionClientImpl(SubscriptionOptions& op) {
-            apiKey = "";
-            secretKey = "";
-            impl = new WebSocketApiImpl(apiKey, secretKey);
-            this->op = op;
+        SubscriptionClientImpl(const SubscriptionOptions& op) {
+            impl = new WebSocketApiImpl();
+            service_ = std::make_shared<WebSocketsService>();
+            service_->initialize("", "", op);
         }
 
         SubscriptionClientImpl(
                 std::string apiKey,
-                std::string secretKey, SubscriptionOptions& op) {
-            this->apiKey = apiKey;
-            this->secretKey = secretKey;
-            this->op = op;
-            impl = new WebSocketApiImpl(apiKey, secretKey);
+                std::string secretKey,
+                SubscriptionOptions& op) {
+            impl = new WebSocketApiImpl();
+            service_ = std::make_shared<WebSocketsService>();
+            service_->initialize(apiKey, secretKey, op);
+            
             if (!op.url.empty()) {
                 host = GetHost(op.url);
                 RequestOptions resop;
@@ -64,9 +57,7 @@ namespace Huobi {
         }
 
         ~SubscriptionClientImpl() {
-            delete dog;
         }
-        void createConnection(WebSocketRequest* request);
 
         void subscribeCandlestickEvent(
                 const char* symbols,
