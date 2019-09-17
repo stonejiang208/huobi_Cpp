@@ -6,7 +6,7 @@
 #include <ctime>
 #include <stdbool.h>
 
-#include <WebSockets/WebSocketsService.h>
+#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
@@ -20,8 +20,8 @@ namespace Huobi {
             WebSocketRequest* request,
             WebSocketsService* service)
     : request(request)
-    , resolver_(asio::make_strand(context->getIO()))
-    , ws_(asio::make_strand(context->getIO()), context->getSSL()) {
+    , resolver_(asio::make_strand(service->getIO()))
+    , ws_(asio::make_strand(service->getIO()), service->getSSL()) {
         this->service_ = service;
         this->connectionId = connectionCounter++;
         lineStatus_ = LineStatus::LINE_IDEL;

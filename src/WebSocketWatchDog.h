@@ -6,7 +6,6 @@
 #include "TimeService.h"
 #include "Huobi/SubscriptionOptions.h"
 #include "WebSocketConnection.h"
-#include "WebSockets/WebSocketsService.h"
 
 
 namespace Huobi {

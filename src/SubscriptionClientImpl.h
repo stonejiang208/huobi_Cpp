@@ -23,27 +23,26 @@ namespace Huobi {
         void startService() override;
 
         SubscriptionClientImpl() {
-            impl = new WebSocketApiImpl();
             service_ = std::make_shared<WebSocketsService>();
             service_->initialize("", "", SubscriptionOptions());
+            impl = new WebSocketApiImpl(service_);
         }
 
         SubscriptionClientImpl(const SubscriptionOptions& op) {
-            impl = new WebSocketApiImpl();
             service_ = std::make_shared<WebSocketsService>();
             service_->initialize("", "", op);
+            impl = new WebSocketApiImpl(service_);
         }
 
         SubscriptionClientImpl(
                 std::string apiKey,
                 std::string secretKey,
                 SubscriptionOptions& op) {
-            impl = new WebSocketApiImpl();
             service_ = std::make_shared<WebSocketsService>();
             service_->initialize(apiKey, secretKey, op);
+            impl = new WebSocketApiImpl(service_);
             
             if (!op.url.empty()) {
-                host = GetHost(op.url);
                 RequestOptions resop;
                 resop.url = op.url;
                 RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str(), resop);

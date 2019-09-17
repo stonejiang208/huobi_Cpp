@@ -11,13 +11,14 @@
 #include "Huobi/PriceDepthEvent.h"
 #include "Huobi/OrderUpdateEvent.h"
 #include "Huobi/Enums.h"
+#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
     class WebSocketApiImpl {
     public:
 
-        WebSocketApiImpl() {
+        WebSocketApiImpl(WebSocketsServiceHanlder service) : service_(service) {
         }
 
         WebSocketRequest* subscribeCandlestickEvent(
@@ -50,6 +51,9 @@ namespace Huobi {
                 const BalanceMode& mode,
                 const std::function<void(const AccountEvent&) >& callback,
                 const std::function<void(HuobiApiException&)>& errorHandler);
+        
+    private:
+        WebSocketsServiceHanlder service_;
     };
 
 }

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <thread>
 #include "WebSocketConnection.h"
+#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
@@ -57,9 +58,9 @@ namespace Huobi {
         connectionList_.remove(connection);
     }
 
-    WebSocketWatchDog::WebSocketWatchDog(SubscriptionOptions &op) : runningFlag(true) {
-        op_ = op;
-        if (op_.isAutoReconnect) {
+    WebSocketWatchDog::WebSocketWatchDog(WebSocketsService* service) : runningFlag(true) {
+        service_ = service;
+        if (service_->getOptions().isAutoReconnect) {
             dogthread = std::thread(&WebSocketWatchDog::WatchDogThread, this);
         }
     }

@@ -66,7 +66,7 @@ namespace Huobi {
 
         void createConnection(WebSocketRequest* request) {
             auto connection = std::make_shared<WebSocketConnection>(
-                    this->apiKey, this->secretKey, request, context_, host);
+                    request, this);
             connectionList_.push_back(connection);
         }
 
