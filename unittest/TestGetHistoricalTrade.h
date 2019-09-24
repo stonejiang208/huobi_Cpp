@@ -28,9 +28,9 @@ TEST(TestGetHistoricalTrade, request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getHistoricalTrade("btcusdt", "12345", 1);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/market/history/trade"));
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt"));
-    ASSERT_TRUE(request->getUrl().find("size=1"));
+    ASSERT_TRUE(request->path.find("/market/history/trade") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=1") != std::string::npos);
 }
 
 TEST(TestGetHistoricalTrade, InvaildSize) {

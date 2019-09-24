@@ -29,11 +29,11 @@ TEST(TestGetMatchResults, request) {
     MatchResultRequest req = MatchResultRequest("btcht");
     auto request = impl->getMatchResults(req);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcht") != -1);
-    ASSERT_TRUE(request->getUrl().find("types") == -1);
-    ASSERT_TRUE(request->getUrl().find("start-date") == -1);
-    ASSERT_TRUE(request->getUrl().find("end-date") == -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcht") != std::string::npos);
+    ASSERT_TRUE(request->path.find("types") == std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date") == std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date") == std::string::npos);
 }
 
 TEST(TestGetMatchResults, request2) {
@@ -41,11 +41,11 @@ TEST(TestGetMatchResults, request2) {
     MatchResultRequest req = MatchResultRequest("btcht", OrderType::sell_limit, "2019-01-02", "2019-02-03", 50, "hh");
     auto request = impl->getMatchResults(req);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcht") != -1);
-    ASSERT_TRUE(request->getUrl().find("types=sell-limit") != -1);
-    ASSERT_TRUE(request->getUrl().find("start-date=2019-01-02") != -1);
-    ASSERT_TRUE(request->getUrl().find("end-date=2019-02-03") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcht") != std::string::npos);
+    ASSERT_TRUE(request->path.find("types=sell-limit") != std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date=2019-01-02") != std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date=2019-02-03") != std::string::npos);
 }
 
 TEST(TestGetMatchResults, result) {

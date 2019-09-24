@@ -42,6 +42,8 @@ namespace Huobi {
     
     class WebSocketConnection : public std::enable_shared_from_this<WebSocketConnection> {
     public:
+        //WebSocketConnection() {};
+        
         WebSocketConnection(
                 WebSocketRequest* request,
                 const std::string& apiKey, const std::string& secretKey,
@@ -54,7 +56,7 @@ namespace Huobi {
         void reConnect(int delayInSecond);
         void close();
         void onMessage(const char* message);
-        void send(const std::string& message);
+        virtual void send(const std::string& message);
         long getLastReceivedTime();
 
         LineStatus getLineStatus() {
@@ -74,6 +76,8 @@ namespace Huobi {
         void on_handshake(beast::error_code ec);
         void on_ssl_handshake(beast::error_code ec);
         void on_write(beast::error_code ec, std::size_t bytes_transferred);
+        
+        void notify_request_when_connection_ready();
 
     private:
         std::string apiKey_;

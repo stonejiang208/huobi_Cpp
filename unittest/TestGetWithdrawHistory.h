@@ -26,12 +26,12 @@ TEST(TestGetWithdrawHistory, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getWithdrawHistory("btc", 24966984923l, 1);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/query/deposit-withdraw") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);    
-    ASSERT_TRUE(request->getUrl().find("currency=btc") != -1);
-    ASSERT_TRUE(request->getUrl().find("from=24966984923") != -1);
-    ASSERT_TRUE(request->getUrl().find("size=1") != -1);
-    ASSERT_TRUE(request->getUrl().find("type=withdraw") != -1);
+    ASSERT_TRUE(request->path.find("/v1/query/deposit-withdraw") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);    
+    ASSERT_TRUE(request->path.find("currency=btc") != std::string::npos);
+    ASSERT_TRUE(request->path.find("from=24966984923") != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=1") != std::string::npos);
+    ASSERT_TRUE(request->path.find("type=withdraw") != std::string::npos);
 
 }
 

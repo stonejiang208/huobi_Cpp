@@ -28,9 +28,9 @@ using namespace Huobi;
 TEST(TestGetAccount, Request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getAccounts();
-    ASSERT_TRUE(request->getUrl().find("/v1/account/accounts") != -1);
+    ASSERT_TRUE(request->path.find("/v1/account/accounts") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature"));
+    ASSERT_TRUE(request->path.find("Signature"));
 }
 
 //TEST(TestGetAccount, Result) {

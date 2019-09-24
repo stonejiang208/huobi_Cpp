@@ -28,11 +28,11 @@ TEST(TestGetDepositHistory, Request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getDepositHistory("btc", 24966984923l, 1);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("currency=btc") != -1);
-    ASSERT_TRUE(request->getUrl().find("type=deposit") != -1);
-    ASSERT_TRUE(request->getUrl().find("from=24966984923") != -1);
-    ASSERT_TRUE(request->getUrl().find("size=1") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
+    ASSERT_TRUE(request->path.find("currency=btc") != std::string::npos);
+    ASSERT_TRUE(request->path.find("type=deposit") != std::string::npos);
+    ASSERT_TRUE(request->path.find("from=24966984923") != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=1") != std::string::npos);
 }
 
 TEST(TestGetDepositHistory, Result) {

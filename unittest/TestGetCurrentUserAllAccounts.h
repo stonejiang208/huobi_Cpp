@@ -27,9 +27,9 @@ using namespace Huobi;
 TEST(TestGetCurrentUserAllAccounts, Request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getCurrentUserAggregatedBalance();
-    ASSERT_TRUE(request->getUrl().find("v1/subuser/aggregate-balance") != -1);
+    ASSERT_TRUE(request->path.find("v1/subuser/aggregate-balance") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
 }
 
 TEST(TestGetCurrentUserAllAccounts, Result) {

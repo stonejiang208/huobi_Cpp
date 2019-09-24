@@ -20,7 +20,6 @@
 #include "../include/Huobi/Decimal.h"
 #include "../src/Utils/JsonDocument.h"
 #include <list>
-#include "MockWebsocketConnecttion.h"
 using namespace Huobi;
 
 TEST(TestSubscribeCandlestickEvent, request) {
@@ -30,10 +29,10 @@ TEST(TestSubscribeCandlestickEvent, request) {
     std::list<std::string> symbols;
     symbols.push_back("btcusdt");
     auto request = impl->subscribeCandlestickEvent(symbols,CandlestickInterval::min1,[](const CandlestickEvent&){}, nullptr);
-    MockWebsocketConnecttion* websocketConnection = new MockWebsocketConnecttion(request);
-    request->connectionHandler(websocketConnection);
-    std::string subscription = websocketConnection->pop();
-    ASSERT_TRUE(subscription.find("btcusdt.kline") != -1);
+    std::list<std::string> dataToBeSend;
+    request->connectionHandler(dataToBeSend);
+    std::string subscription = dataToBeSend.back();
+    ASSERT_TRUE(subscription.find("btcusdt.kline") != std::string::npos);
 }
 
 TEST(TestSubscribeCandlestickEvent, multiSymbols) {
@@ -45,12 +44,14 @@ SubscriptionOptions op;
     symbols.push_back("btcht");
 
     auto request = impl->subscribeCandlestickEvent(symbols,CandlestickInterval::min1,[](const CandlestickEvent&){}, nullptr);
-    MockWebsocketConnecttion* websocketConnection = new MockWebsocketConnecttion(request);
-    request->connectionHandler(websocketConnection);
-    std::string subscriptionf = websocketConnection->pop();
-    ASSERT_TRUE(subscriptionf.find("btcusdt.kline") != -1);
-    std::string subscriptions = websocketConnection->pop();
-    ASSERT_TRUE(subscriptions.find("btcht.kline") != -1);
+    std::list<std::string> dataToBeSend;
+    request->connectionHandler(dataToBeSend);
+    std::string subscriptionf = dataToBeSend.back();
+    dataToBeSend.pop_back();
+    ASSERT_TRUE(subscriptionf.find("btcht.kline") != std::string::npos);
+    std::string subscriptions = dataToBeSend.back();
+    ASSERT_TRUE(subscriptions.find("btcusdt.kline") != std::string::npos);
+    
 }
 
 #endif /* TESTSUBSCRIBECANDLESTICKEVENT_H */

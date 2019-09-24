@@ -28,7 +28,7 @@ TEST(TestGet24HTradeStatistics, Request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->get24HTradeStatistics("btcusdt");
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt") != -1);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
 }
 
 //TEST(TestGet24HTradeStatistics, Result) {

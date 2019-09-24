@@ -28,32 +28,32 @@ TEST(TestGetHistoryOrders, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     HistoricalOrdersRequest req("htbtc", OrderState::canceled);
     auto request = impl->getHistoricalOrders(req);
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders") != 0);
+    ASSERT_TRUE(request->path.find("/v1/order/orders") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=htbtc") != -1);
-    ASSERT_TRUE(request->getUrl().find("states=canceled") != -1);
-    ASSERT_TRUE(request->getUrl().find("start-date") == -1);
-    ASSERT_TRUE(request->getUrl().find("end-date") == -1);
-    ASSERT_TRUE(request->getUrl().find("types") == -1);
-    ASSERT_TRUE(request->getUrl().find("from") == -1);
-    ASSERT_TRUE(request->getUrl().find("size") == -1);
+    ASSERT_TRUE(request->path.find("Signature")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=htbtc")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("states=canceled")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date") == std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date") == std::string::npos);
+    ASSERT_TRUE(request->path.find("types") == std::string::npos);
+    ASSERT_TRUE(request->path.find("from") == std::string::npos);
+    ASSERT_TRUE(request->path.find("size") == std::string::npos);
 }
 
 TEST(TestGetHistoryOrders, request2) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     HistoricalOrdersRequest req("htbtc", OrderState::submitted, OrderType::sell_limit, "2019-01-02", "2019-02-03", "2222", 12);
     auto request = impl->getHistoricalOrders(req);
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders") != 0);
+    ASSERT_TRUE(request->path.find("/v1/order/orders") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=htbtc") != -1);
-    ASSERT_TRUE(request->getUrl().find("states=submitted") != -1);
-    ASSERT_TRUE(request->getUrl().find("start-date=2019-01-02") != -1);
-    ASSERT_TRUE(request->getUrl().find("end-date=2019-02-03") != -1);
-    ASSERT_TRUE(request->getUrl().find("types=sell-limit") != -1);
-    ASSERT_TRUE(request->getUrl().find("from=2222") != -1);
-    ASSERT_TRUE(request->getUrl().find("size=12") != -1);
+    ASSERT_TRUE(request->path.find("Signature")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=htbtc")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("states=submitted")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date=2019-01-02")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date=2019-02-03")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("types=sell-limit")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("from=2222")  != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=12")  != std::string::npos);
 }
 
 TEST(TestGetHistoryOrders, result) {

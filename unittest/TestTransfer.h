@@ -26,10 +26,10 @@ TEST(TestTransfer, transfer_in) {
     TransferRequest req("btcusdt", AccountType::spot, AccountType::margin, "btc", Decimal("1.1"));
     auto request = impl->transfer(req);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/dw/transfer-in/margin") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/dw/transfer-in/margin") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("btcusdt", querier.getString("symbol"));
     ASSERT_STREQ("btc", querier.getString("currency"));
     ASSERT_STREQ("1.1", querier.getString("amount"));
@@ -40,10 +40,10 @@ TEST(TestTransfer, transfer_out) {
     TransferRequest req("btcusdt", AccountType::margin, AccountType::spot, "btc", Decimal("1.1"));
     auto request = impl->transfer(req);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/dw/transfer-out/margin") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/dw/transfer-out/margin") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("btcusdt", querier.getString("symbol"));
     ASSERT_STREQ("btc", querier.getString("currency"));
     ASSERT_STREQ("1.1", querier.getString("amount"));

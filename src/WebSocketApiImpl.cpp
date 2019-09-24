@@ -4,7 +4,6 @@
 #include "WebSocketApiImpl.h"
 #include "AccountsInfoMap.h"
 #include "WebSocketRequest.h"
-#include "WebSocketConnection.h"
 #include "Utils/Channels.h"
 #include "Utils/ChannelParser.h"
 #include "TimeService.h"
@@ -22,9 +21,9 @@ namespace Huobi {
                 ->shouldNotNull(interval.getValue(), "interval")
                 ->checkCallback(callback);
         auto req = new WebSocketRequestImpl<CandlestickEvent>();
-        req->connectionHandler = [symbols, interval](WebSocketConnection * connection) {
+        req->connectionHandler = [symbols, interval](std::list<std::string>& dataToBeSent) {
             for (std::string symbol : symbols) {
-                connection->send(Channels::klineChannel(symbol, interval));
+                dataToBeSent.push_back(Channels::klineChannel(symbol, interval));
             }
         };
         req->JsonParser = [interval](const JsonWrapper& json) {
@@ -58,9 +57,9 @@ namespace Huobi {
             const std::function<void(HuobiApiException&)>& errorHandler) {
         InputChecker::checker()->checkCallback(callback);
         auto req = new WebSocketRequestImpl<TradeEvent>();
-        req->connectionHandler = [symbols](WebSocketConnection * connection) {
+        req->connectionHandler = [symbols](std::list<std::string>& dataToBeSent) {
             for (std::string symbol : symbols) {
-                connection->send(Channels::tradeChannel(symbol));
+                dataToBeSent.push_back(Channels::tradeChannel(symbol));
             }
         };
 
@@ -98,9 +97,9 @@ namespace Huobi {
 
         auto req = new WebSocketRequestImpl<PriceDepthEvent>();
 
-        req->connectionHandler = [symbols](WebSocketConnection * connection) {
+        req->connectionHandler = [symbols](std::list<std::string>& dataToBeSent) {
             for (std::string symbol : symbols) {
-                connection->send(Channels::priceDepthChannel(symbol));
+                dataToBeSent.push_back(Channels::priceDepthChannel(symbol));
             }
         };
 
@@ -149,9 +148,9 @@ namespace Huobi {
 
         auto req = new WebSocketRequestImpl<TradeStatisticsEvent>();
 
-        req->connectionHandler = [symbols](WebSocketConnection * connection) {
+        req->connectionHandler = [symbols](std::list<std::string>& dataToBeSent) {
             for (std::string symbol : symbols) {
-                connection->send(Channels::tradeStatisticsChannel(symbol));
+                dataToBeSent.push_back(Channels::tradeStatisticsChannel(symbol));
             }
         };
 
@@ -189,9 +188,9 @@ namespace Huobi {
 
         auto req = new WebSocketRequestImpl<OrderUpdateEvent>();
 
-        req->connectionHandler = [symbols](WebSocketConnection * connection) {
+        req->connectionHandler = [symbols](std::list<std::string>& dataToBeSent) {
             for (std::string symbol : symbols) {
-                connection->send(Channels::orderChannel(symbol));
+                dataToBeSent.push_back(Channels::orderChannel(symbol));
             }
         };
 
@@ -230,8 +229,8 @@ namespace Huobi {
         InputChecker::checker()->checkCallback(callback);
 
         auto req = new WebSocketRequestImpl<AccountEvent>();
-        req->connectionHandler = [mode](WebSocketConnection * connection) {
-            connection->send(Channels::accountChannel(mode));
+        req->connectionHandler = [mode](std::list<std::string>& dataToBeSent) {
+            dataToBeSent.push_back(Channels::accountChannel(mode));
         };
         req->JsonParser = [this](const JsonWrapper& json) {
             AccountEvent accountEvent;

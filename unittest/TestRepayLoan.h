@@ -25,10 +25,10 @@ TEST(TestRepayLoan, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->repayLoan(12345l, Decimal("1.1"));
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/margin/orders/12345/repay") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/margin/orders/12345/repay") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("1.1", querier.getString("amount"));
 }
 

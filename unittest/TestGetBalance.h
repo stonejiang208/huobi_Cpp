@@ -27,12 +27,13 @@ using namespace Huobi;
 
 TEST(TestGetBalance, Request) {
     Account account;
-    account.id = 5628009l;
+    account.id = 5628009;
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getBalance(account);
-    ASSERT_TRUE(request->getUrl().find("/v1/account/accounts/5628009/balance"));
+    printf("-- %s --", request->path.c_str());
+    ASSERT_TRUE(request->path.find("/v1/account/accounts/5628009/balance") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature"));
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
 }
 
 TEST(TestGetBalance, Result) {

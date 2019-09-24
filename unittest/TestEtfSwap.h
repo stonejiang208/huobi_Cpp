@@ -27,10 +27,10 @@ TEST(TestEtfSwap, Request_In) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->etfSwap("hb10", 123, EtfSwapType::etf_swap_in);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/etf/swap/in") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/etf/swap/in") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("hb10", querier.getString("etf_name"));
     ASSERT_STREQ("123", querier.getString("amount"));
 }
@@ -39,10 +39,10 @@ TEST(TestEtfSwap, Request_Out) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->etfSwap("hb10", 345, EtfSwapType::etf_swap_out);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/etf/swap/out") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/etf/swap/out") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("hb10", querier.getString("etf_name"));
     ASSERT_STREQ("345", querier.getString("amount"));
 }

@@ -26,10 +26,10 @@ TEST(TestTransferMaster, request) {
     TransferMasterRequest trrequest(1234l, TransferMasterType::master_point_transfer_in, "btc", Decimal("0.01"));
     auto request = impl->transferBetweenParentAndSub(trrequest);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/subuser/transfer") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/subuser/transfer") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("1234", querier.getString("sub-uid"));
     ASSERT_STREQ("btc", querier.getString("currency"));
     ASSERT_EQ(TransferMasterType::master_point_transfer_in.getValue(), querier.getString("type"));

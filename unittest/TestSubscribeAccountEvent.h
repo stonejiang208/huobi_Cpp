@@ -20,17 +20,17 @@
 #include "../include/Huobi/Decimal.h"
 #include "../src/Utils/JsonDocument.h"
 #include <list>
-#include "MockWebsocketConnecttion.h"
+
 using namespace Huobi;
 TEST(TestSubscribeAccountEvent, request) {
 
     SubscriptionOptions op;
     WebSocketApiImpl* impl = new WebSocketApiImpl("12345","456");
     auto request = impl->subscribeAccountEvent(BalanceMode::available,[](const AccountEvent&){}, nullptr);
-    MockWebsocketConnecttion* websocketConnection = new MockWebsocketConnecttion(request);
-    request->connectionHandler(websocketConnection);
-    std::string subscription = websocketConnection->pop();
-    ASSERT_TRUE(subscription.find("accounts") != -1);
+    std::list<std::string> dataToBeSend;
+    request->connectionHandler(dataToBeSend);
+    std::string subscription = dataToBeSend.back();
+    ASSERT_TRUE(subscription.find("accounts") != std::string::npos);
     ASSERT_TRUE(request->isNeedSignature);
 }
 

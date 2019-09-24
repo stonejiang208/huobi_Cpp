@@ -29,10 +29,10 @@ TEST(TestCreateOrder, Request) {
     NewOrderRequest req("htbtc", AccountType::spot, OrderType::sell_limit, Decimal(1.0), Decimal(1.0));
     auto request = impl->createOrder(req);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders/place") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/order/orders/place") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("htbtc", querier.getString("symbol"));
     ASSERT_STREQ("12345", querier.getString("account-id"));
     ASSERT_STREQ("1", querier.getString("amount"));

@@ -28,9 +28,9 @@ TEST(TestCancelWithdraw, Request) {
 
     auto request = impl->cancelWithdraw("htbtc", 12345l);
 
-    ASSERT_TRUE(request->getUrl().find("/v1/dw/withdraw-virtual/12345/cancel") != -1);
+    ASSERT_TRUE(request->path.find("/v1/dw/withdraw-virtual/12345/cancel") != std::string::npos);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
 }
 
 TEST(TestCancelWithdraw, Result_Normal) {

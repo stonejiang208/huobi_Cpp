@@ -33,10 +33,10 @@ TEST(TestApplyLoan, Request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
 
     auto request = impl->applyLoan("btcusdt", "btc", Decimal("1.1"));
-    ASSERT_TRUE(request->getUrl().find("/v1/margin/orders") != -1);
+    ASSERT_TRUE(request->path.find("/v1/margin/orders") != std::string::npos);
     ASSERT_EQ("POST", request->method);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("btcusdt", querier.getString("symbol"));
     ASSERT_STREQ("btc", querier.getString("currency"));
     ASSERT_STREQ("1.1", querier.getString("amount"));

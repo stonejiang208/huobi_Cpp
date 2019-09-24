@@ -18,6 +18,8 @@ namespace Huobi {
     class WebSocketApiImpl {
     public:
 
+        WebSocketApiImpl() {}
+        
         WebSocketApiImpl(const std::string& apiKey, const std::string& secretKey)
         : apiKey_(apiKey), secretKey_(secretKey) {
         }

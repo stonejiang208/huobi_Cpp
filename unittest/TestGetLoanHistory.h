@@ -29,14 +29,14 @@ TEST(TestGetLoanHistory, request) {
     LoanOrderRequest req = LoanOrderRequest("btcusdt", "2019-01-02", "2019-02-03", LoanOrderStates::created, 23456, 123, QueryDirection::NEXT);
     auto request = impl->getLoanHistory(req);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/margin/loan-orders") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt") != -1);
-    ASSERT_TRUE(request->getUrl().find("start-date=2019-01-02") != -1);
-    ASSERT_TRUE(request->getUrl().find("end-date=2019-02-03") != -1);
-    ASSERT_TRUE(request->getUrl().find("states=created") != -1);
-    ASSERT_TRUE(request->getUrl().find("from=23456") != -1);
-    ASSERT_TRUE(request->getUrl().find("size=123") != -1);
-    ASSERT_TRUE(request->getUrl().find("direct=next") != -1);
+    ASSERT_TRUE(request->path.find("/v1/margin/loan-orders") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date=2019-01-02") != std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date=2019-02-03") != std::string::npos);
+    ASSERT_TRUE(request->path.find("states=created") != std::string::npos);
+    ASSERT_TRUE(request->path.find("from=23456") != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=123") != std::string::npos);
+    ASSERT_TRUE(request->path.find("direct=next") != std::string::npos);
 }
 
 TEST(TestGetLoanHistory, request2) {
@@ -44,14 +44,14 @@ TEST(TestGetLoanHistory, request2) {
     LoanOrderRequest req = LoanOrderRequest("btcusdt");
     auto request = impl->getLoanHistory(req);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/margin/loan-orders") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt") != -1);
-    ASSERT_TRUE(request->getUrl().find("start-date") == -1);
-    ASSERT_TRUE(request->getUrl().find("end-date") == -1);
-    ASSERT_TRUE(request->getUrl().find("states") == -1);
-    ASSERT_TRUE(request->getUrl().find("from") == -1);
-    ASSERT_TRUE(request->getUrl().find("size") == -1);
-    ASSERT_TRUE(request->getUrl().find("direct") == -1);
+    ASSERT_TRUE(request->path.find("/v1/margin/loan-orders") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
+    ASSERT_TRUE(request->path.find("start-date") == std::string::npos);
+    ASSERT_TRUE(request->path.find("end-date") == std::string::npos);
+    ASSERT_TRUE(request->path.find("states") == std::string::npos);
+    ASSERT_TRUE(request->path.find("from") == std::string::npos);
+    ASSERT_TRUE(request->path.find("size") == std::string::npos);
+    ASSERT_TRUE(request->path.find("direct") == std::string::npos);
 }
 
 TEST(TestGetLoanHistory, result) {

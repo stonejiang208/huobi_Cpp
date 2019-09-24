@@ -26,10 +26,10 @@ TEST(TestWithdraw, request) {
     WithdrawRequest withdrawRequest("0xde709f2102306220921060314715629080e2fb77", Decimal("0.05"), "eth");
     auto request = impl->withdraw(withdrawRequest);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/dw/withdraw/api/create") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/dw/withdraw/api/create") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("0xde709f2102306220921060314715629080e2fb77", querier.getString("address"));
     ASSERT_STREQ("eth", querier.getString("currency"));
     ASSERT_STREQ("0.05", querier.getString("amount"));

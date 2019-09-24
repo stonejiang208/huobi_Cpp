@@ -60,14 +60,14 @@ namespace Huobi {
             stream.handshake(boost::asio::ssl::stream_base::client);
 
             if (ptr->method == "POST") {
-                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::post, ptr->tagret.c_str(), 11};
+                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::post, ptr->path.c_str(), 11};
                 req.set(boost::beast::http::field::host, ptr->host.c_str());
                 req.set(boost::beast::http::field::content_type, "application/json;charset=UTF-8");
                 req.body() = ptr->postbody;
                 req.prepare_payload();
                 boost::beast::http::write(stream, req);
             } else {
-                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::get, ptr->tagret.c_str(), 11};
+                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::get, ptr->path.c_str(), 11};
                 req.set(boost::beast::http::field::host, ptr->host.c_str());
                 req.set(boost::beast::http::field::content_type, "application/x-www-form-urlencoded");
                 boost::beast::http::write(stream, req);

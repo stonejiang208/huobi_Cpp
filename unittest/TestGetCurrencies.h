@@ -28,7 +28,7 @@ using namespace Huobi;
 //    RestApiImpl* impl = new RestApiImpl();
 //    auto request = impl->getCurrencies();
 //    ASSERT_EQ("GET", request->method);
-//    ASSERT_TRUE(request->getUrl().find("/v1/common/currencys") != -1);
+//    ASSERT_TRUE(request->getUrl().find("/v1/common/currencys") != std::string::npos);
 //
 //    std::string data = "{\n"
 //      "\t\"status\": \"ok\",\n"

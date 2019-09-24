@@ -28,8 +28,8 @@ TEST(TestGetBestQuote, Request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getBestQuote("btcusdt");
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/market/detail/merged") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt"));
+    ASSERT_TRUE(request->path.find("/market/detail/merged") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt"));
 }
 
 //TEST(TestGetBestQuote, Result) {

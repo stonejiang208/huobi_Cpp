@@ -27,10 +27,10 @@ using namespace Huobi;
 TEST(TestGetMarginBalanceDetail, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getMarginBalanceDetail("htbtc");
-    ASSERT_TRUE(request->getUrl().find("/v1/margin/accounts/balance") != -1);
+    ASSERT_TRUE(request->path.find("/v1/margin/accounts/balance") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=htbtc") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=htbtc") != std::string::npos);
 }
 
 //TEST(TestGetMarginBalanceDetail, result) {

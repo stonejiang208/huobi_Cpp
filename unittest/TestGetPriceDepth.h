@@ -24,9 +24,9 @@ TEST(TestGetPriceDepth, request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getPriceDepth("btcusdt",10);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/market/depth") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt") != -1);
-    ASSERT_TRUE(request->getUrl().find("type=step0") != -1);
+    ASSERT_TRUE(request->path.find("/market/depth") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
+    ASSERT_TRUE(request->path.find("type=step0") != std::string::npos);
 
 }
 

@@ -25,9 +25,9 @@ TEST(TestGetCandlestick, request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getCandlestick("btcusdt", CandlestickInterval::year1, 100, 0, 0);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("symbol=btcusdt") != -1);
-    ASSERT_TRUE(request->getUrl().find("size=100") != -1);
-    ASSERT_TRUE(request->getUrl().find("period=1year") != -1);
+    ASSERT_TRUE(request->path.find("symbol=btcusdt") != std::string::npos);
+    ASSERT_TRUE(request->path.find("size=100") != std::string::npos);
+    ASSERT_TRUE(request->path.find("period=1year") != std::string::npos);
 }
 
 TEST(TestGetCandlestick, TestMin) {

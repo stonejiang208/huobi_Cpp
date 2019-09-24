@@ -2,6 +2,7 @@
 #define WEBSOCKETREQUEST_H
 
 #include <functional>
+#include <vector>
 #include "Huobi/HuobiApiException.h"
 #include "Utils/JsonWrapper.h"
 
@@ -12,7 +13,7 @@ namespace Huobi {
     class WebSocketRequest {
     public:
         std::string usr;
-        std::function<void(WebSocketConnection*)> connectionHandler;
+        std::function<void(std::list<std::string>& dataToBeSent)> connectionHandler;
         virtual void implCallback(const JsonWrapper& json) = 0;
         std::function<void(HuobiApiException&)> errorHandler;
         bool isNeedSignature;

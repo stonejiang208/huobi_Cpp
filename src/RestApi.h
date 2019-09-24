@@ -10,7 +10,7 @@ namespace Huobi {
     struct RestApi {
         std::string postbody;
         // std::string url;
-        std::string tagret;
+        std::string path;
         std::string host;
 
         std::function<T(const JsonWrapper&) > jsonParser;

@@ -31,10 +31,10 @@ TEST(TestCancelOpenOrders, Request) {
     req.side = OrderSide::buy;
     auto request = impl->cancelOpenOrders(req);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders/batchCancelOpenOrders") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/order/orders/batchCancelOpenOrders") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("htbtc", querier.getString("symbol"));
     ASSERT_STREQ("12345", querier.getString("account-id"));
     ASSERT_STREQ("buy", querier.getString("side"));

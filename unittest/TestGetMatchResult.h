@@ -27,10 +27,10 @@ using namespace Huobi;
 TEST(TestGetMatchResult, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getMatchResults("htbtc", 24966984923l);
-    printf(request->getUrl().c_str());
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders/24966984923/matchresults") != -1);
+    printf(request->path.c_str());
+    ASSERT_TRUE(request->path.find("/v1/order/orders/24966984923/matchresults") != std::string::npos);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
 }
 
 TEST(TestGetMatchResult, InvalidSymbol) {

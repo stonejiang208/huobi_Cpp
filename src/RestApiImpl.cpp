@@ -1013,7 +1013,7 @@ namespace Huobi {
         std::string tail = ApiSignature::buildSignaturePath(host, accessKey, secretKey, adress, res->method, builder.getAdress().c_str());
         builder.setAdress(temp + builder.getAdress() + tail);
         res->host = host;
-        res->tagret = builder.getAdress();
+        res->path = builder.getAdress();
         res->postbody = builder.getPostBody();
         printf(res->postbody.c_str());
         printf("\n");
@@ -1035,7 +1035,7 @@ namespace Huobi {
             builder.setAdress(temp + builder.getAdress() + "&" + tail);
         }
         res->host = host;
-        res->tagret = builder.getAdress();
+        res->path = builder.getAdress();
         res->postbody = builder.getPostBody();
         return res;
     }
@@ -1055,7 +1055,7 @@ namespace Huobi {
         builder.setAdress(url);
 
         res->host = host;
-        res->tagret = builder.getAdress();
+        res->path = builder.getAdress();
         res->postbody = builder.getPostBody();
         return res;
     }

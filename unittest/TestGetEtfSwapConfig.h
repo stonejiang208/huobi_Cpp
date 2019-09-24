@@ -28,8 +28,8 @@ TEST(TestGetEtfSwapConfig, Request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getEtfSwapConfig("hb10");
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/etf/swap/config"));
-    ASSERT_TRUE(request->getUrl().find("etf_name=hb10"));
+    ASSERT_TRUE(request->path.find("/etf/swap/config") != std::string::npos);
+    ASSERT_TRUE(request->path.find("etf_name=hb10") != std::string::npos);
 
 }
 

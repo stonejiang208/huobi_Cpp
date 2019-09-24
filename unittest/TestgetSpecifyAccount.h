@@ -24,8 +24,8 @@ TEST(TestgetSpecifyAccount, request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");   
     auto request = impl->getSpecifyAccountBalance(123);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/account/accounts/123") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);  
+    ASSERT_TRUE(request->path.find("/v1/account/accounts/123") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);  
 }
 TEST(TestgetSpecifyAccount, NullId) {
     

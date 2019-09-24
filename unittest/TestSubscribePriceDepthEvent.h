@@ -20,7 +20,6 @@
 #include "../include/Huobi/Decimal.h"
 #include "../src/Utils/JsonDocument.h"
 #include <list>
-#include "MockWebsocketConnecttion.h"
 using namespace Huobi;
 
 TEST(TestSubscribePriceDepthEvent, request) {
@@ -30,10 +29,10 @@ TEST(TestSubscribePriceDepthEvent, request) {
     std::list<std::string> symbols;
     symbols.push_back("btcusdt");
     auto request = impl->subscribePriceDepthEvent(symbols,[](const PriceDepthEvent&){}, nullptr);
-    MockWebsocketConnecttion* websocketConnection = new MockWebsocketConnecttion(request);
-    request->connectionHandler(websocketConnection);
-    std::string subscription = websocketConnection->pop();
-    ASSERT_TRUE(subscription.find("depth.step0") != -1);
+    std::list<std::string> dataToBeSend;
+    request->connectionHandler(dataToBeSend);
+    std::string subscription = dataToBeSend.back();
+    ASSERT_TRUE(subscription.find("depth.step0") != std::string::npos);
 }
 
 TEST(TestSubscribePriceDepthEvent, Receive_Normal) {

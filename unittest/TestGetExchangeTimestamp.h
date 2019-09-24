@@ -33,7 +33,7 @@ TEST(TestGetExchangeTimestamp, test) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getExchangeTimestamp();
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/common/timestamp"));
+    ASSERT_TRUE(request->path.find("/v1/common/timestamp") != std::string::npos);
     JsonWrapper json = JsonDocument().parseFromString(data);
     auto result = request->jsonParser(json);
     ASSERT_EQ(TimeService::convertCSTInMillisecondToUTC(1494900087029l), result);

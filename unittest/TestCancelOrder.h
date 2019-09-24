@@ -28,8 +28,8 @@ TEST(TestCancelOrder, Request) {
 
     auto request = impl->cancelOrder("htbtc", 12345L);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/order/orders/12345/submitcancel") != -1);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("/v1/order/orders/12345/submitcancel") != std::string::npos);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
 }
 
 TEST(TestCancelOrder, CancelOrders) {
@@ -39,9 +39,9 @@ TEST(TestCancelOrder, CancelOrders) {
     longList.push_back(2344l);
     auto request = impl->cancelOrders("htbtc", longList);
     ASSERT_EQ("POST", request->method);
-    ASSERT_TRUE(request->getUrl().find("Signature") != -1);
+    ASSERT_TRUE(request->path.find("Signature") != std::string::npos);
     JsonDocument doc;
-    JsonWrapper querier = doc.parseFromString(request->getPostBody());
+    JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("12443", querier.getJsonObjectOrArray("order-ids").getStringAt(0));
     ASSERT_STREQ("2344", querier.getJsonObjectOrArray("order-ids").getStringAt(1));
 }

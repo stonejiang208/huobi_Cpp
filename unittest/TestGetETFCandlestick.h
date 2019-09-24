@@ -28,10 +28,10 @@ TEST(TestGetETFCandlestick, Request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getETFCandlestick("hb10", CandlestickInterval::year1, 100);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/quotation/market/history/kline") != -1);
-    ASSERT_TRUE(request->getUrl().find("symbol=hb10") != -1);
-    ASSERT_TRUE(request->getUrl().find("period=1year") != -1);
-    ASSERT_TRUE(request->getUrl().find("limit=100") != -1);
+    ASSERT_TRUE(request->path.find("/quotation/market/history/kline") != std::string::npos);
+    ASSERT_TRUE(request->path.find("symbol=hb10") != std::string::npos);
+    ASSERT_TRUE(request->path.find("period=1year") != std::string::npos);
+    ASSERT_TRUE(request->path.find("limit=100") != std::string::npos);
 }
 
 TEST(TestGetETFCandlestick, UnsupportSymbol) {

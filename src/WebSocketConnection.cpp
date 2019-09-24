@@ -106,7 +106,7 @@ namespace Huobi {
         if (request->isNeedSignature == true) {
             path = "/ws/v1";
         } else {
-            if (host.find("api") != -1) {
+            if (host.find("api") != std::string::npos) {
                 path = "/ws";
             } else {
                 path = "/api/ws";
@@ -133,9 +133,7 @@ namespace Huobi {
         if (request->isNeedSignature) {
             send(createSignature());
         } else {
-            if (request->connectionHandler) {
-                request->connectionHandler(this);
-            }
+            notify_request_when_connection_ready();
         }
     }
 
@@ -215,9 +213,7 @@ namespace Huobi {
             } else if (op == "ping") {
                 processPingOnTradingLine(json);
             } else if (op == "auth") {
-                if (request->connectionHandler) {
-                    request->connectionHandler(this);
-                }
+                notify_request_when_connection_ready();
             }
         } else if (json.containKey("ch")) {
             onReceive(json);
@@ -327,6 +323,16 @@ namespace Huobi {
     //        ws_.close(beast::websocket::close_code::normal);
     //        lineStatus_ = LineStatus::LINE_IDEL;
     //    }
+    
+    void WebSocketConnection::notify_request_when_connection_ready() {
+        if (request != nullptr && request->connectionHandler) {
+            std::list<std::string> dataToBeSend;
+            request->connectionHandler(dataToBeSend);
+            std::for_each(dataToBeSend.begin(), dataToBeSend.end(), [this](const std::string& data) {
+                send(data);
+            });
+        }
+    }
 }
 
 

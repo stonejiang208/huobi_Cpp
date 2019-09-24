@@ -28,10 +28,10 @@ TEST(TestGetEtfSwapHistory, Request) {
     RestApiImpl* impl = new RestApiImpl("12345", "67890");
     auto request = impl->getEtfSwapHistory("hb10", 0, 10);
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/etf/swap/list"));
-    ASSERT_TRUE(request->getUrl().find("etf_name=hb10"));
-    ASSERT_TRUE(request->getUrl().find("offset=0"));
-    ASSERT_TRUE(request->getUrl().find("limit=10"));
+    ASSERT_TRUE(request->path.find("/etf/swap/list") != std::string::npos);
+    ASSERT_TRUE(request->path.find("etf_name=hb10") != std::string::npos);
+    ASSERT_TRUE(request->path.find("offset=0") != std::string::npos);
+    ASSERT_TRUE(request->path.find("limit=10") != std::string::npos);
 }
 
 TEST(TestGetEtfSwapHistory, Result) {

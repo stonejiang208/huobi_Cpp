@@ -25,7 +25,7 @@ TEST(TestGetSymbols, request) {
     RestApiImpl* impl = new RestApiImpl();
     auto request = impl->getSymbols();
     ASSERT_EQ("GET", request->method);
-    ASSERT_TRUE(request->getUrl().find("/v1/common/symbols") != -1);
+    ASSERT_TRUE(request->path.find("/v1/common/symbols") != std::string::npos);
 
 }
 
