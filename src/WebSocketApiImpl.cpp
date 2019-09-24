@@ -204,7 +204,7 @@ namespace Huobi {
             Order order;
             order.orderId = data.getLong("order-id");
             order.symbol = parser.getSymbol();
-            order.accountType = AccountsInfoMap::getAccount(service_->getApiKey(), data.getLong("account-id")).type;
+            order.accountType = AccountsInfoMap::getAccount(apiKey_, data.getLong("account-id")).type;
             order.amount = data.getDecimal("order-amount");
             order.price = data.getDecimal("order-price");
             order.createdTimestamp = TimeService::convertCSTInMillisecondToUTC(data.getLong("created-at"));
@@ -242,7 +242,7 @@ namespace Huobi {
             for (size_t i = 0; i < listArray.size(); i++) {
                 JsonWrapper itemInList = listArray.getJsonObjectAt(i);
                 AccountChange change;
-                change.accountType = AccountsInfoMap::getAccount(service_->getApiKey(), itemInList.getLong("account-id")).type;
+                change.accountType = AccountsInfoMap::getAccount(apiKey_, itemInList.getLong("account-id")).type;
                 change.currency = itemInList.getString("currency");
                 change.balance = itemInList.getDecimal("balance");
                 change.balanceType = BalanceType::lookup(itemInList.getString("type"));

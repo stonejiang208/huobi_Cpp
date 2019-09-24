@@ -2,6 +2,7 @@
 #define WEBSOCKETAPIIMPL_H
 
 #include <string>
+#include <memory>
 #include <list>
 #include "WebSocketRequest.h"
 #include "Huobi/CandlestickEvent.h"
@@ -11,14 +12,14 @@
 #include "Huobi/PriceDepthEvent.h"
 #include "Huobi/OrderUpdateEvent.h"
 #include "Huobi/Enums.h"
-#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
     class WebSocketApiImpl {
     public:
 
-        WebSocketApiImpl(WebSocketsServiceHanlder service) : service_(service) {
+        WebSocketApiImpl(const std::string& apiKey, const std::string& secretKey)
+        : apiKey_(apiKey), secretKey_(secretKey) {
         }
 
         WebSocketRequest* subscribeCandlestickEvent(
@@ -51,10 +52,13 @@ namespace Huobi {
                 const BalanceMode& mode,
                 const std::function<void(const AccountEvent&) >& callback,
                 const std::function<void(HuobiApiException&)>& errorHandler);
-        
+
     private:
-        WebSocketsServiceHanlder service_;
+        std::string apiKey_;
+        std::string secretKey_;
     };
+
+    typedef std::shared_ptr<WebSocketApiImpl> WebSocketApiImplHandler;
 
 }
 #endif /* WEBSOCKETAPIIMPL_H */

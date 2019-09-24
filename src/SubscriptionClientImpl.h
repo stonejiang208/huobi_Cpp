@@ -7,7 +7,6 @@
 #include "WebSocketApiImpl.h"
 #include "WebSocketRequest.h"
 #include "WebSocketConnection.h"
-#include "WebSockets/WebSocketsService.h"
 #include "WebSocketWatchDog.h"
 #include "Huobi/RequestOptions.h"
 #include "GetHost.h"
@@ -16,42 +15,32 @@
 namespace Huobi {
 
     class SubscriptionClientImpl : public SubscriptionClient {
-    private:
-        WebSocketApiImpl *impl = nullptr;
-        WebSocketsServiceHanlder service_;
     public:
-        void startService() override;
-
-        SubscriptionClientImpl() {
-            service_ = std::make_shared<WebSocketsService>();
-            service_->initialize("", "", SubscriptionOptions());
-            impl = new WebSocketApiImpl(service_);
-        }
-
-        SubscriptionClientImpl(const SubscriptionOptions& op) {
-            service_ = std::make_shared<WebSocketsService>();
-            service_->initialize("", "", op);
-            impl = new WebSocketApiImpl(service_);
-        }
 
         SubscriptionClientImpl(
-                std::string apiKey,
-                std::string secretKey,
-                SubscriptionOptions& op) {
-            service_ = std::make_shared<WebSocketsService>();
-            service_->initialize(apiKey, secretKey, op);
-            impl = new WebSocketApiImpl(service_);
-            
-            if (!op.url.empty()) {
-                RequestOptions resop;
-                resop.url = op.url;
-                RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str(), resop);
-                AccountsInfoMap::updateUserInfo(apiKey, restimpl);
-                delete restimpl;
-            } else {
-                RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str());
-                AccountsInfoMap::updateUserInfo(apiKey, restimpl);
-                delete restimpl;
+                const std::string& apiKey,
+                const std::string& secretKey,
+                const SubscriptionOptions& op)
+        : ssl_(boost::asio::ssl::context::sslv23_client) {
+            apiKey_ = apiKey;
+            secretKey_ = secretKey;
+            op_ = std::make_shared<SubscriptionOptions>(op);
+            watchDog_ = std::make_shared<WebSocketWatchDog>(op_);
+            impl_ = std::make_shared<WebSocketApiImpl>(apiKey, secretKey);
+            ssl_.load_verify_file("/etc/huobi_cert/cert.pem");
+
+            if (apiKey != "" && secretKey != "") {
+                if (!op.url.empty()) {
+                    RequestOptions resop;
+                    resop.url = op.url;
+                    RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str(), resop);
+                    AccountsInfoMap::updateUserInfo(apiKey, restimpl);
+                    delete restimpl;
+                } else {
+                    RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str());
+                    AccountsInfoMap::updateUserInfo(apiKey, restimpl);
+                    delete restimpl;
+                }
             }
         }
 
@@ -89,8 +78,41 @@ namespace Huobi {
                 const std::function<void(const AccountEvent&) >& callback,
                 const std::function<void(HuobiApiException&)>& errorHandler = std::function<void(HuobiApiException&)>()) override;
 
+        void startService() override {
+            std::for_each(connectionList_.begin(), connectionList_.end(), [](const WebSocketConnectHanlder & handler) {
+                handler->connect();
+            });
+            // Run the I/O service. The call will return when
+            // the socket is closed.
+            io_.run();
+        }
+
+        void stopService() override {
+            std::for_each(connectionList_.begin(), connectionList_.end(), [](const WebSocketConnectHanlder & handler) {
+                handler->close();
+            });
+            io_.stop();
+        }
+
     private:
         std::list<std::string> parseSymbols(const char* symbols);
+
+        void createConnection(WebSocketRequest * request) {
+            connectionList_.push_back(std::make_shared<WebSocketConnection>(request, apiKey_, secretKey_, op_, io_, ssl_));
+        }
+
+        typedef std::list<WebSocketConnectHanlder> WebSocketConnectList;
+
+    private:
+        boost::asio::io_context io_;
+        boost::asio::ssl::context ssl_;
+        WebSocketWatchDogHandler watchDog_;
+        WebSocketApiImplHandler impl_;
+        WebSocketConnectList connectionList_;
+
+        std::string apiKey_;
+        std::string secretKey_;
+        SubscriptionOptionsHandler op_;
     };
 }
 

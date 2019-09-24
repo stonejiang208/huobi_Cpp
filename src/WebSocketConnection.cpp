@@ -2,11 +2,11 @@
 #include "Utils/ApiSignature.h"
 #include "Utils/JsonDocument.h"
 #include "Utils/JsonWriter.h"
+#include "GetHost.h"
 #include "TimeService.h"
+#include "Huobi/SubscriptionOptions.h"
 #include <ctime>
 #include <stdbool.h>
-
-#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
@@ -18,11 +18,14 @@ namespace Huobi {
 
     WebSocketConnection::WebSocketConnection(
             WebSocketRequest* request,
-            WebSocketsService* service)
-    : request(request)
-    , resolver_(asio::make_strand(service->getIO()))
-    , ws_(asio::make_strand(service->getIO()), service->getSSL()) {
-        this->service_ = service;
+            const std::string& apiKey, const std::string& secretKey,
+            const SubscriptionOptionsHandler& op,
+            boost::asio::io_context& io, boost::asio::ssl::context& ssl)
+    : apiKey_(apiKey), secretKey_(secretKey)
+    , request(request)
+    , resolver_(asio::make_strand(io))
+    , ws_(asio::make_strand(io), ssl) {
+        host = GetHost(op->url);
         this->connectionId = connectionCounter++;
         lineStatus_ = LineStatus::LINE_IDEL;
         if (host.find("api") == 0) {
@@ -268,14 +271,14 @@ namespace Huobi {
                 local->tm_min,
                 local->tm_sec);
         std::string signa = ApiSignature::CreateSignature(host,
-                this->apiKey,
-                this->secretKey,
+                apiKey_,
+                secretKey_,
                 "/ws/v1", "GET", timeBuf, "");
 
         JsonWriter writer;
         writer.put("SignatureVersion", "2");
         writer.put("op", "auth");
-        writer.put("AccessKeyId", this->apiKey);
+        writer.put("AccessKeyId", apiKey_);
         writer.put("Signature", signa.c_str());
         writer.put("SignatureMethod", "HmacSHA256");
         writer.put("Timestamp", buf);

@@ -21,10 +21,9 @@
 #include "Utils/gzip.h"
 #include "WebSocketRequest.h"
 #include "TimeService.h"
+#include "Huobi/SubscriptionOptions.h"
 
 namespace Huobi {
-
-    class WebSocketsService;
     
     typedef enum LINESTATUS {
         LINE_CONNECTED, // Connected to server, assume the line status is fine.
@@ -45,7 +44,9 @@ namespace Huobi {
     public:
         WebSocketConnection(
                 WebSocketRequest* request,
-                WebSocketsService* service);
+                const std::string& apiKey, const std::string& secretKey,
+                const SubscriptionOptionsHandler& op,
+                boost::asio::io_context& io, boost::asio::ssl::context& ssl);
 
         void connect();
         void disconnect();
@@ -75,8 +76,9 @@ namespace Huobi {
         void on_write(beast::error_code ec, std::size_t bytes_transferred);
 
     private:
-        std::string apiKey;
-        std::string secretKey;
+        std::string apiKey_;
+        std::string secretKey_;
+        
         std::unique_ptr<WebSocketRequest> request;
         std::atomic<LineStatus> lineStatus_;
         long lastReceivedTime_ = 0;
@@ -85,8 +87,6 @@ namespace Huobi {
         std::string subscriptionMarketUrl = "wss://api.huobi.pro/ws";
         std::string subscriptionTradingUrl = "wss://api.huobi.pro/ws/v1";
         int connectionId;
-
-        WebSocketsService* service_;
 
         net::tcp::resolver resolver_;
         beast::websocket::stream<

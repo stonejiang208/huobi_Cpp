@@ -10,16 +10,14 @@
 
 namespace Huobi {
 
-    class WebSocketsService;
-     
     class WebSocketWatchDog {
     private:
-        SubscriptionOptions op_;
+        SubscriptionOptionsHandler op_;
         
     public:   
         typedef std::list<WebSocketConnectHanlder> WebSocketConnectList;
         
-        WebSocketWatchDog(WebSocketsService* service);
+        WebSocketWatchDog(const SubscriptionOptionsHandler& op);
         void WatchDogThread();
         bool isRunning() const{ return runningFlag; }
         void onConnectionCreated(WebSocketConnectHanlder connection);
@@ -28,11 +26,12 @@ namespace Huobi {
         
     private:
         WebSocketConnectList connectionList_;
-        WebSocketsService* service_;
         std::mutex mutex;
         bool runningFlag;
         std::thread dogthread;
     };
+    
+    typedef std::shared_ptr<WebSocketWatchDog> WebSocketWatchDogHandler;
 }
 
 

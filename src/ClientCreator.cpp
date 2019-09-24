@@ -12,16 +12,15 @@ namespace Huobi {
     }
 
     SubscriptionClient* createSubscriptionClient() {
-        return new SubscriptionClientImpl();
+        return new SubscriptionClientImpl("", "", SubscriptionOptions());
     }
 
     SubscriptionClient* createSubscriptionClient(const char* apiKey, const char* secretKey) {
-        SubscriptionOptions op;
-        return new SubscriptionClientImpl(apiKey, secretKey, op);
+        return new SubscriptionClientImpl(apiKey, secretKey, SubscriptionOptions());
     }
 
     SubscriptionClient* createSubscriptionClient(SubscriptionOptions& op) {
-        return new SubscriptionClientImpl(op);
+        return new SubscriptionClientImpl("", "", op);
     }
 
     RequestClient* createRequestClient() {

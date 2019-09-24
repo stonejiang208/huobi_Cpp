@@ -4,7 +4,6 @@
 #include <chrono>
 #include <thread>
 #include "WebSocketConnection.h"
-#include "WebSockets/WebSocketsService.h"
 
 namespace Huobi {
 
@@ -31,12 +30,12 @@ namespace Huobi {
                 if (lineStatus == LineStatus::LINE_CONNECTED) {
                     // Check response
                     time_t ts = TimeService::getCurrentTimeStamp() - connection->getLastReceivedTime();
-                    if (ts > op_.receiveLimitMs) {
+                    if (ts > op_->receiveLimitMs) {
                         Logger::LogWarning("No response from server");
-                        connection->reConnect(op_.connectionDelayOnFailure);
+                        connection->reConnect(op_->connectionDelayOnFailure);
                     }
                 } else if (lineStatus == LineStatus::LINE_CLOSED_ON_ERROR) {
-                    connection->reConnect(op_.connectionDelayOnFailure);
+                    connection->reConnect(op_->connectionDelayOnFailure);
                 } else if (lineStatus == LineStatus::LINE_DELAY) {
                     connection->reConnect();
                 }
@@ -58,9 +57,8 @@ namespace Huobi {
         connectionList_.remove(connection);
     }
 
-    WebSocketWatchDog::WebSocketWatchDog(WebSocketsService* service) : runningFlag(true) {
-        service_ = service;
-        if (service_->getOptions().isAutoReconnect) {
+    WebSocketWatchDog::WebSocketWatchDog(const SubscriptionOptionsHandler& op) : op_(op), runningFlag(true) {
+        if (op_->isAutoReconnect) {
             dogthread = std::thread(&WebSocketWatchDog::WatchDogThread, this);
         }
     }

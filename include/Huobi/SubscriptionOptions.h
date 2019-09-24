@@ -2,10 +2,18 @@
 #define SUBSCRIPTIONOPTIONS_H
 
 #include <string>
-
+#include <memory>
 namespace Huobi {
-
+    
     struct SubscriptionOptions {
+        SubscriptionOptions() {}
+        
+        SubscriptionOptions(const SubscriptionOptions& op)
+        : isAutoReconnect (op.isAutoReconnect)
+        , receiveLimitMs(op.receiveLimitMs)
+        , connectionDelayOnFailure(op.connectionDelayOnFailure)
+        , url(op.url) {
+        }
         /**
          * flag of reconnect
          */
@@ -26,6 +34,7 @@ namespace Huobi {
 
     };
 
+    typedef std::shared_ptr<SubscriptionOptions> SubscriptionOptionsHandler;
 }
 
 #endif /* SUBSCRIPTIONOPTIONS_H */

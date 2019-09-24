@@ -19,7 +19,7 @@ namespace Huobi {
         bool enable_to_stdout_ = true;
 
         void WriteLog(Logger::LogLevel level, const char* level_str, const char *msg, va_list arg) {
-            if (log_level_ < level) {
+            if (log_level_ > level) {
                 return;
             }
             time_t t = time(NULL);

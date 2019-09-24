@@ -116,6 +116,8 @@ namespace Huobi {
          * start sub,must excute after sub-function.
          */
         virtual void startService() = 0;
+        
+        virtual void stopService() = 0;
     };
 
     SubscriptionClient* createSubscriptionClient(const char* apiKey, const char* secretKey, SubscriptionOptions&op);
