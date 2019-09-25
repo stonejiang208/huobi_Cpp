@@ -162,8 +162,7 @@ namespace Huobi {
         char buf[4096 * 4] = {0};
         unsigned int l = 4096 * 4;
         l = gzDecompress((char*) buffer_.data().data(), buffer_.size(), buf, l);
-        //lwsl_user("RX %d: %s\n", l, (const char *) buf);
-        Logger::LogInfo("RX: %s", (const char *) buf);
+        Logger::LogDebug("[Sub][%d] RX: %s", connectionId, (const char *) buf);
         onMessage(buf);
         buffer_.clear();
 
@@ -184,7 +183,7 @@ namespace Huobi {
     }
 
     void WebSocketConnection::send(const std::string& message) {
-        Logger::LogDebug("Send: %s", message.c_str());
+        Logger::LogDebug("[Sub][%d] Send: %s", connectionId, message.c_str());
         ws_.async_write(asio::buffer(message),
                 beast::bind_front_handler(
                 &WebSocketConnection::on_write,
@@ -222,7 +221,7 @@ namespace Huobi {
         } else if (json.containKey("subbed")) {
 
         } else {
-            Logger::LogCritical("parse failed！：%s", message);
+            Logger::LogCritical("[Sub][%d] Parse failed: %s", connectionId, message);
         }
     }
 

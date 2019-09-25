@@ -39,6 +39,7 @@ TEST(TestApplyLoan, Request) {
     JsonWrapper querier = doc.parseFromString(request->postbody);
     ASSERT_STREQ("btcusdt", querier.getString("symbol"));
     ASSERT_STREQ("btc", querier.getString("currency"));
+    std::cout << "---:" << querier.getString("amount") << std::endl;
     ASSERT_STREQ("1.1", querier.getString("amount"));
 }
 

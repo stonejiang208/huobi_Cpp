@@ -4,104 +4,84 @@
 #include <string>
 #include <iostream>
 
-extern "C" {
-#include "decDouble.h"
-}
+#include <boost/multiprecision/cpp_dec_float.hpp>
 
 namespace Huobi {
 
     class Decimal {
     public:
 
-        class Context {
-        public:
-
-            Context() {
-                decContextDefault(&set, DEC_INIT_BASE);
-            }
-
-            decContext* get() const {
-                return const_cast<decContext*> (&set);
-            }
-        private:
-            decContext set;
-        };
-
         Decimal() {
-            decDoubleZero(&data);
         }
 
-        explicit Decimal(double value) {
-            char buf[DECDOUBLE_String] = {0};
-            snprintf(buf, DECDOUBLE_String, "%g", value);
-            decDoubleFromString(&data, buf, context.get());
+        explicit Decimal(double value) : data_(boost::multiprecision::cpp_dec_float_50(std::to_string(value))) {
         }
 
-        explicit Decimal(const char* value) {
-            decDoubleFromString(&data, value, context.get());
+        explicit Decimal(const char* value) : data_(boost::multiprecision::cpp_dec_float_50(value)) {
         }
 
-        Decimal(const Decimal& obj) : data(obj.data) {
+        Decimal(const Decimal& obj) : data_(obj.data_) {
         }
 
-        Decimal(int value) {
-            decDoubleFromInt32(&data, value);
+        Decimal(int value) : data_(value){
         }
 
         Decimal operator+(const Decimal& obj) {
-            decDouble result;
-            return decDoubleAdd(&result, &data, &obj.data, context.get());
+            boost::multiprecision::cpp_dec_float_50 tmp = data_;
+            tmp += obj.data_;
+            return Decimal(tmp);
         }
 
         Decimal operator-(const Decimal& obj) {
-            decDouble result;
-            return decDoubleSubtract(&result, &data, &obj.data, context.get());
+            boost::multiprecision::cpp_dec_float_50 tmp = data_;
+            tmp -= obj.data_;
+            return Decimal(tmp);
         }
 
         Decimal operator*(const Decimal& obj) {
-            decDouble result;
-            return decDoubleMultiply(&result, &data, &obj.data, context.get());
+            boost::multiprecision::cpp_dec_float_50 tmp = data_;
+            tmp *= obj.data_;
+            return Decimal(tmp);
         }
 
         Decimal operator/(const Decimal& obj) {
-            decDouble result;
-            return decDoubleDivide(&result, &data, &obj.data, context.get());
+            boost::multiprecision::cpp_dec_float_50 tmp = data_;
+            tmp /= obj.data_;
+            return Decimal(tmp);
         }
 
         Decimal& operator+=(const Decimal& obj) {
-            decDoubleAdd(&data, &data, &obj.data, context.get());
+            data_ += obj.data_;
             return *this;
         }
 
         Decimal& operator-=(const Decimal& obj) {
-            decDoubleSubtract(&data, &data, &obj.data, context.get());
+            data_ -= obj.data_;
             return *this;
         }
 
         Decimal& operator*=(const Decimal& obj) {
-            decDoubleMultiply(&data, &data, &obj.data, context.get());
+            data_ *= obj.data_;
             return *this;
         }
 
         Decimal& operator/=(const Decimal& obj) {
-            decDoubleDivide(&data, &data, &obj.data, context.get());
+            data_ /= obj.data_;
             return *this;
         }
 
         Decimal operator%(const Decimal& obj) {
-            decDouble result;
-            return decDoubleRemainder(&result, &data, &obj.data, context.get());
+            boost::multiprecision::cpp_dec_float_50 tmp = boost::multiprecision::fmod(data_, obj.data_);
+            return Decimal(tmp);
         }
 
         Decimal& operator=(const Decimal& obj) {
-            decDoubleCopy(&data, &obj.data);
+            data_ = obj.data_;
             return *this;
         }
 
         bool operator==(const Decimal& obj) const {
-            decDouble result;
-            decDoubleCompare(&result, &data, &obj.data, const_cast<decContext*> (context.get()));
-            return decDoubleIsZero(&result);
+            return data_ == obj.data_;
         }
 
         bool operator!=(const Decimal& obj) const {
@@ -109,45 +89,41 @@ namespace Huobi {
         }
 
         bool isZero() {
-            return decDoubleIsZero(&data);
+            return data_.is_zero();
         }
 
         bool operator<(const Decimal & obj) const {
-            decDouble result;
-            decDoubleCompare(&result, &data, &obj.data, const_cast<decContext*> (context.get()));
-            return decDoubleIsNegative(&result);
+            return data_ < obj.data_;
         }
 
         bool operator<=(const Decimal & obj) const {
-            decDouble result;
-            decDoubleCompare(&result, &data, &obj.data, const_cast<decContext*> (context.get()));
-            return decDoubleIsNegative(&result) || decDoubleIsZero(&result);
+            return data_ <= obj.data_;
         }
 
         bool operator>(const Decimal & obj) const {
-            return !(this->operator>(obj));
+            return data_ > obj.data_;
         }
 
         bool operator>=(const Decimal & obj) const {
-            decDouble result;
-            decDoubleCompare(&result, &data, &obj.data, const_cast<decContext*> (context.get()));
-            return decDoubleIsPositive(&result) || decDoubleIsZero(&result);
+            return data_ >= obj.data_;
         }
 
         Decimal abs(const Decimal & obj) const {
-            decDouble result;
-            return Decimal(decDoubleAbs(&result, &data, context.get()));
+            boost::multiprecision::cpp_dec_float_50 tmp = boost::multiprecision::abs(data_);
+            return Decimal(tmp);
         }
 
         double toDouble() {
-            char str[DECDOUBLE_String] = {0};
-            decDoubleToString(&data, str);
-            return strtod(str, 0);
+            return data_.convert_to<double>();
         }
 
         std::string toString() const {
-            char buf[DECDOUBLE_String] = {0};
-            return std::string(decDoubleToString(&data, buf));
+//            static std::stringstream ss;
+//            ss.clear();
+//            ss.precision(std::numeric_limits<boost::multiprecision::cpp_dec_float_50>::digits10);
+//            ss << data_;
+//            return ss.str();
+            return data_.convert_to<std::string>();
         }
 
         static Decimal NaN() {
@@ -157,14 +133,13 @@ namespace Huobi {
 
     private:
 
-        Decimal(decDouble value) : data(value) {
+        Decimal(const boost::multiprecision::cpp_dec_float_50& value) : data_(value) {
         }
 
-        Decimal(decDouble * value) : data(*value) {
-        }
+//        Decimal(decDouble * value) : data(*value) {
+//        }
 
-        Context context;
-        decDouble data;
+        boost::multiprecision::cpp_dec_float_50 data_;
     };
 
     static std::ostream & operator<<(std::ostream &out, const Decimal& obj) {

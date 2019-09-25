@@ -54,15 +54,8 @@ MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
 
 PROJECT(unittest)
 
-FIND_PATH(
-        LIBDECNUMBER_INCLUDE_DIR
-        decNumber.h
-        /usr/include/decnumber/
-        /usr/local/include/decnumber/
-)
 
 include_directories(../include)
-include_directories(${LIBDECNUMBER_INCLUDE_DIR})
 include_directories(/usr/local/include)
 if (APPLE)
     include_directories(/usr/local/opt/openssl/include)
@@ -84,12 +77,6 @@ MESSAGE(FATAL_ERROR "gtest main not found")
 ENDIF(NOT LIBGTEST_MAIN_PATH)
 MESSAGE(STATUS ${LIBGTEST_MAIN_PATH} " found")
 
-find_library(LIBWEBSOCKET_PATH websockets)
-IF(NOT LIBWEBSOCKET_PATH)
-MESSAGE(FATAL_ERROR "libwebsockets not found")
-ENDIF(NOT LIBWEBSOCKET_PATH)
-MESSAGE(STATUS ${LIBWEBSOCKET_PATH} " found")
-
 find_library(LIBSSL_PATH ssl)
 IF(NOT LIBSSL_PATH)
 MESSAGE(FATAL_ERROR "libssl not found")
@@ -102,27 +89,16 @@ MESSAGE(FATAL_ERROR "libcrypto not found")
 ENDIF(NOT LIBCRYPTO_PATH) 
 MESSAGE(STATUS ${LIBCRYPTO_PATH} " found")
 
-find_library(LIBCURL_PATH curl)
-IF(NOT LIBCURL_PATH)
-MESSAGE(FATAL_ERROR "curl not found")
-ENDIF(NOT LIBCURL_PATH) 
-MESSAGE(STATUS ${LIBCURL_PATH} " found")
-
 find_library(LIBZ_PATH z)
 IF(NOT LIBZ_PATH)
 MESSAGE(FATAL_ERROR "z not found")
 ENDIF(NOT LIBZ_PATH) 
 MESSAGE(STATUS ${LIBZ_PATH} " found")
 
-find_library(LIBDECNUMBER_PATH decnumber)
-IF(NOT LIBDECNUMBER_PATH)
-MESSAGE(FATAL_ERROR "decnumber not found")
-ENDIF(NOT LIBDECNUMBER_PATH) 
-MESSAGE(STATUS ${LIBDECNUMBER_PATH} " found")
 find_package(Boost)
 add_definitions(-std=c++11)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} HuobiClient ${LIBDECNUMBER_PATH} ${LIBGTEST_PATH} ${LIBGTEST_MAIN_PATH}  ${LIBSSL_PATH} ${LIBCRYPTO_PATH} ${LIBWEBSOCKET_PATH} ${LIBCURL_PATH} ${LIBZ_PATH} pthread)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} HuobiClient ${LIBGTEST_PATH} ${LIBGTEST_MAIN_PATH} ${LIBSSL_PATH} ${LIBCRYPTO_PATH} ${LIBZ_PATH} pthread)
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ./unittest

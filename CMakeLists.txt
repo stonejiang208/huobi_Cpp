@@ -88,17 +88,8 @@ ELSE ()
 ENDIF ()
 
 
-FIND_PATH(
-        LIBDECNUMBER_INCLUDE_DIR
-        decNumber.h
-        /usr/include/decnumber/
-        /usr/local/include/decnumber/
-)
-
 include_directories(./include)
-include_directories(${LIBDECNUMBER_INCLUDE_DIR})
 include_directories(/usr/local/include)
-include_directories(/usr/include/boost169)
 
 if (APPLE)
     include_directories(/usr/local/opt/openssl/include)
@@ -115,13 +106,6 @@ AUX_SOURCE_DIRECTORY(./src/Utils DIR_SRCS)
 
 ADD_LIBRARY(${PROJECT_NAME} STATIC ${DIR_SRCS})
 
-find_package(Boost)
-find_library(LIBWEBSOCKET_PATH websockets)
-IF (NOT LIBWEBSOCKET_PATH)
-    MESSAGE(FATAL_ERROR "libwebsockets not found")
-ENDIF (NOT LIBWEBSOCKET_PATH)
-MESSAGE(STATUS ${LIBWEBSOCKET_PATH} " found")
-
 find_library(LIBSSL_PATH ssl)
 IF (NOT LIBSSL_PATH)
     MESSAGE(FATAL_ERROR "libssl not found")
@@ -134,23 +118,11 @@ IF (NOT LIBCRYPTO_PATH)
 ENDIF (NOT LIBCRYPTO_PATH)
 MESSAGE(STATUS ${LIBCRYPTO_PATH} " found")
 
-find_library(LIBCURL_PATH curl)
-IF (NOT LIBCURL_PATH)
-    MESSAGE(FATAL_ERROR "curl not found")
-ENDIF (NOT LIBCURL_PATH)
-MESSAGE(STATUS ${LIBCURL_PATH} " found")
-
 find_library(LIBZ_PATH z)
 IF (NOT LIBZ_PATH)
     MESSAGE(FATAL_ERROR "z not found")
 ENDIF (NOT LIBZ_PATH)
 MESSAGE(STATUS ${LIBZ_PATH} " found")
-
-find_library(LIBDECNUMBER_PATH decnumber)
-IF (NOT LIBDECNUMBER_PATH)
-    MESSAGE(FATAL_ERROR "decnumber not found")
-ENDIF (NOT LIBDECNUMBER_PATH)
-MESSAGE(STATUS ${LIBDECNUMBER_PATH} " found")
 
 add_definitions(-std=c++11)
 
