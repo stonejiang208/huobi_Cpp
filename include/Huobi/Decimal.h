@@ -142,18 +142,9 @@ namespace Huobi {
         boost::multiprecision::cpp_dec_float_50 data_;
     };
 
-    static std::ostream & operator<<(std::ostream &out, const Decimal& obj) {
-        out << obj.toString();
-        return out;
-    }
+    std::ostream & operator<<(std::ostream &out, const Decimal& obj);
 
-    // Remove because it is not used.
-//    static std::istream & operator>>(std::istream &in, Decimal& obj) {
-//        std::string str;
-//        in >> str;
-//        obj = Decimal(str.c_str());
-//        return in;
-//    }
+    std::istream & operator>>(std::istream &in, Decimal& obj);
 }
 
 #endif /* DECIMAL_H */

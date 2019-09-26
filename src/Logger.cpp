@@ -25,7 +25,7 @@ namespace Huobi {
             time_t t = time(NULL);
             struct tm *local = gmtime(&t);
             char buf[1024] = {0};
-            sprintf(buf, "%04d-%02d-%02d; %02d:%02d:%02d; %s :%s\n", local->tm_year + 1900,
+            sprintf(buf, "%04d-%02d-%02dT%02d:%02d:%02d; %s :%s\n", local->tm_year + 1900,
                     local->tm_mon + 1,
                     local->tm_mday,
                     local->tm_hour,

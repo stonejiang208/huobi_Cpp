@@ -43,57 +43,65 @@ namespace Huobi {
         T callSync_Boost(RestApi<T>* request) {
             static boost::beast::flat_buffer buffer;
             std::unique_ptr<RestApi < T >> ptr(request);
-
             boost::beast::ssl_stream<boost::beast::tcp_stream> stream(ioc_, ctx_);
-
-            // Set SNI Hostname (many hosts need this to handshake successfully)
-            if (!SSL_set_tlsext_host_name(stream.native_handle(), ptr->host.c_str())) {
-                boost::beast::error_code ec{static_cast<int> (::ERR_get_error()), boost::asio::error::get_ssl_category()};
-                throw boost::beast::system_error{ec};
-            }
-            auto const results = resolver_.resolve(ptr->host.c_str(), "443");
-
-            Logger::LogDebug("[RESTfulSync] Connecting host: %s", ptr->host.c_str());
-            boost::beast::get_lowest_layer(stream).expires_after(std::chrono::seconds(20));
-            boost::beast::get_lowest_layer(stream).connect(results);
-            
-            stream.handshake(boost::asio::ssl::stream_base::client);
-
-            if (ptr->method == "POST") {
-                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::post, ptr->path.c_str(), 11};
-                req.set(boost::beast::http::field::host, ptr->host.c_str());
-                req.set(boost::beast::http::field::content_type, "application/json;charset=UTF-8");
-                req.body() = ptr->postbody;
-                req.prepare_payload();
-                boost::beast::http::write(stream, req);
-            } else {
-                boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::get, ptr->path.c_str(), 11};
-                req.set(boost::beast::http::field::host, ptr->host.c_str());
-                req.set(boost::beast::http::field::content_type, "application/x-www-form-urlencoded");
-                boost::beast::http::write(stream, req);
-            }
-            std::cout << "-- Send request Done" << std::endl;
             boost::beast::http::response<boost::beast::http::string_body> res;
-            buffer.clear();
-            // Receive the HTTP response
-            boost::beast::http::read(stream, buffer, res);
-            std::cout << "-- Get response" << std::endl;
-            // Write the message to standard out
-            std::cout << res.body().c_str() << std::endl;
+            try {
+                // Set SNI Hostname (many hosts need this to handshake successfully)
+                if (!SSL_set_tlsext_host_name(stream.native_handle(), ptr->host.c_str())) {
+                    boost::beast::error_code ec{static_cast<int> (::ERR_get_error()), boost::asio::error::get_ssl_category()};
+                    throw boost::beast::system_error{ec};
+                }
+                auto const results = resolver_.resolve(ptr->host.c_str(), "443");
 
+                Logger::LogDebug("[RESTfulSync] Connecting host: %s", ptr->host.c_str());
+                boost::beast::get_lowest_layer(stream).expires_after(std::chrono::seconds(20));
+                boost::beast::get_lowest_layer(stream).connect(results);
+
+                stream.handshake(boost::asio::ssl::stream_base::client);
+                Logger::LogDebug("[RESTfulSync] Connected host: %s", ptr->host.c_str());
+
+                if (ptr->method == "POST") {
+                    boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::post, ptr->path.c_str(), 11};
+                    req.set(boost::beast::http::field::host, ptr->host.c_str());
+                    req.set(boost::beast::http::field::content_type, "application/json;charset=UTF-8");
+                    req.body() = ptr->postbody;
+                    req.prepare_payload();
+                    Logger::LogDebug("[RESTfulSync] Sending by POST %s", ptr->path.c_str());
+                    boost::beast::http::write(stream, req);
+                } else {
+                    boost::beast::http::request<boost::beast::http::string_body> req{boost::beast::http::verb::get, ptr->path.c_str(), 11};
+                    req.set(boost::beast::http::field::host, ptr->host.c_str());
+                    req.set(boost::beast::http::field::content_type, "application/x-www-form-urlencoded");
+                    Logger::LogDebug("[RESTfulSync] Sending by GET %s", ptr->path.c_str());
+                    boost::beast::http::write(stream, req);
+                }
+                buffer.clear();
+                // Receive the HTTP response
+                boost::beast::http::read(stream, buffer, res);
+                Logger::LogDebug("[RESTfulSync] Get response %s", res.body().c_str());
+            } catch (std::exception const& e) {
+                Logger::LogCritical("[RESTfulSync] Get error %s", e.what());
+                throw HuobiApiException(HuobiApiException::EXEC_ERROR,
+                        "[Executing] Query from server error: " + std::string(e.what()));
+            }
             try {
                 stream.shutdown();
             } catch (std::exception const& e) {
-                std::cerr << "Error: " << e.what() << std::endl;
+                Logger::LogDebug("[RESTfulSync] Error in shutdown, can be ignored", e.what());
             }
 
-            JsonDocument djson;
-            JsonWrapper json = djson.parseFromString(res.body().c_str());
-            RestApiInvoke::checkResponse(json);
+            if (res.body().size() != 0) {
+                JsonDocument djson;
+                JsonWrapper json = djson.parseFromString(res.body().c_str());
+                RestApiInvoke::checkResponse(json);
 
-            T val = (ptr->jsonParser)(json);
+                T val = (ptr->jsonParser)(json);
+                return val;
+            } else {
+                throw HuobiApiException(HuobiApiException::EXEC_ERROR,
+                        "[Executing] Service empty response");
+            }
 
-            return val;
         }
     public:
 

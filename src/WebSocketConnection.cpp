@@ -28,22 +28,11 @@ namespace Huobi {
         host = GetHost(op->url);
         this->connectionId = connectionCounter++;
         lineStatus_ = LineStatus::LINE_IDEL;
-        if (host.find("api") == 0) {
-            this->subscriptionMarketUrl = "wss://";
-            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/ws";
-            this->subscriptionTradingUrl = "wss://";
-            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
-        } else {
-            this->subscriptionMarketUrl = "wss://";
-            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/api/ws";
-            this->subscriptionTradingUrl = "wss://";
-            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
-        }
     };
 
     void WebSocketConnection::on_resolve(beast::error_code ec, net::tcp::resolver::results_type results) {
         if (ec)
-            return Logger::LogInfo("[Sub][%d] Failed to resolve host: ", connectionId, host.c_str());
+            return Logger::LogWarning("[Sub][%d] Failed to resolve host: %s, %s", connectionId, host.c_str(), ec.message().c_str());
         Logger::LogInfo("[Sub][%d] Resolved host", connectionId);
         // Set the timeout for the operation
         beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(30));
@@ -58,7 +47,7 @@ namespace Huobi {
 
     void WebSocketConnection::on_connect(beast::error_code ec, net::tcp::resolver::results_type::endpoint_type) {
         if (ec)
-            return fail(ec, "connect");
+            return Logger::LogWarning("[Sub][%d] Failed to connect host: %s, %s", connectionId, host.c_str(), ec.message().c_str());
         Logger::LogInfo("[Sub][%d] Connected to host", connectionId);
 
         // Turn off the timeout on the tcp_stream, because
@@ -81,7 +70,7 @@ namespace Huobi {
 
     void WebSocketConnection::on_ssl_handshake(beast::error_code ec) {
         if (ec)
-            return fail(ec, "ssl_handshake");
+            return Logger::LogWarning("[Sub][%d] Failed to connect SSL host: %s, %s", connectionId, host.c_str(), ec.message().c_str());
 
         // Turn off the timeout on the tcp_stream, because
         // the websocket stream has its own timeout system.
@@ -112,7 +101,6 @@ namespace Huobi {
                 path = "/api/ws";
             }
         }
-        Logger::LogInfo("[Sub][%d] Connected to %s", connectionId, path.c_str());
         ws_.async_handshake(host, path,
                 beast::bind_front_handler(
                 &WebSocketConnection::on_handshake,
@@ -121,7 +109,7 @@ namespace Huobi {
 
     void WebSocketConnection::on_handshake(beast::error_code ec) {
         if (ec)
-            return fail(ec, "handshake");
+            return Logger::LogWarning("[Sub][%d] Failed to handshake host: %s, %s", connectionId, host.c_str(), ec.message().c_str());
         lineStatus_ = LINE_CONNECTED;
         lastReceivedTime_ = TimeService::getCurrentTimeStamp();
         ws_.async_read(
@@ -129,7 +117,7 @@ namespace Huobi {
                 beast::bind_front_handler(
                 &WebSocketConnection::on_read,
                 shared_from_this()));
-
+        Logger::LogInfo("[Sub][%d] Connected to %s", connectionId, host.c_str());
         if (request->isNeedSignature) {
             send(createSignature());
         } else {
@@ -156,8 +144,7 @@ namespace Huobi {
     void WebSocketConnection::on_read(beast::error_code ec, std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
         if (ec) {
-            std::cout << "---- on_read ERROR" << std::endl;
-            return fail(ec, "read");
+            return Logger::LogCritical("[Sub][%d] Failed to read %s", connectionId, ec.message().c_str());
         }
         char buf[4096 * 4] = {0};
         unsigned int l = 4096 * 4;
@@ -177,9 +164,8 @@ namespace Huobi {
             beast::error_code ec,
             std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
-
         if (ec)
-            return fail(ec, "write");
+            return Logger::LogCritical("[Sub][%d] Failed to write %s", connectionId, ec.message().c_str());
     }
 
     void WebSocketConnection::send(const std::string& message) {
@@ -316,18 +302,20 @@ namespace Huobi {
         lineStatus_ = LineStatus::LINE_IDEL;
     }
 
-    //    void WebSocketConnection::closeOnError() {
-    //        Logger::LogInfo("[Sub][%d] Closing normally", connectionId);
-    //        lineStatus_ = LineStatus::LINE_DISCONNECTING;
-    //        ws_.close(beast::websocket::close_code::normal);
-    //        lineStatus_ = LineStatus::LINE_IDEL;
-    //    }
-    
+    void WebSocketConnection::closeOnError() {
+        Logger::LogInfo("[Sub][%d] Closing due to error", connectionId);
+        if (lineStatus_ = LineStatus::LINE_CONNECTED) {
+            lineStatus_ = LineStatus::LINE_DISCONNECTING;
+            ws_.close(beast::websocket::close_code::protocol_error);
+        }
+        lineStatus_ = LineStatus::LINE_CLOSED_ON_ERROR;
+    }
+
     void WebSocketConnection::notify_request_when_connection_ready() {
         if (request != nullptr && request->connectionHandler) {
             std::list<std::string> dataToBeSend;
             request->connectionHandler(dataToBeSend);
-            std::for_each(dataToBeSend.begin(), dataToBeSend.end(), [this](const std::string& data) {
+            std::for_each(dataToBeSend.begin(), dataToBeSend.end(), [this](const std::string & data) {
                 send(data);
             });
         }

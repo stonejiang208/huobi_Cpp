@@ -75,7 +75,7 @@ namespace Huobi {
         void on_handshake(beast::error_code ec);
         void on_ssl_handshake(beast::error_code ec);
         void on_write(beast::error_code ec, std::size_t bytes_transferred);
-
+        void closeOnError();
         void notify_request_when_connection_ready();
 
     private:
@@ -87,8 +87,6 @@ namespace Huobi {
         long lastReceivedTime_ = 0;
         int delayInSecond = 0;
         std::string host;
-        std::string subscriptionMarketUrl = "wss://api.huobi.pro/ws";
-        std::string subscriptionTradingUrl = "wss://api.huobi.pro/ws/v1";
         int connectionId;
 
         net::tcp::resolver resolver_;
