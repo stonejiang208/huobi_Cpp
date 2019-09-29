@@ -28,6 +28,7 @@ namespace Huobi {
         SubscriptionOptions op;
         // std::string host = "api.huobi.pro";
         std::string host = "api.huobi.so";
+        // std::string host = "api.huobi.vn";
         WebSocketWatchDog* dog = nullptr;
     public:
         void startService() override;
@@ -58,7 +59,7 @@ namespace Huobi {
                 RequestOptions resop;
                 resop.url = op.url;
                 RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str(), resop);
-                AccountsInfoMap::updateUserInfo(apiKey, restimpl);
+               AccountsInfoMap::updateUserInfo(apiKey, restimpl);
                 delete restimpl;
             } else {
                 RestApiImpl* restimpl = new RestApiImpl(apiKey.c_str(), secretKey.c_str());

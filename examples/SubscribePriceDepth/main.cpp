@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     SubscriptionOptions options;
     options.url = "wss://api.huobi.pro";
     SubscriptionClient* client = createSubscriptionClient(options); 
-    client->subscribePriceDepthEvent("btcusdt", [](PriceDepthEvent priceDepthEvent) {      
+    client->subscribePriceDepthEvent("htusdt",DepthStep::step1, [](PriceDepthEvent priceDepthEvent) {      
         cout << "Symbol: " << priceDepthEvent.symbol << endl;
         cout << "Bid price: " << priceDepthEvent.data.bids[0].price<< endl;
         cout << "Ask price: " << priceDepthEvent.data.asks[0].price << endl;

@@ -71,7 +71,7 @@ namespace Huobi {
             }
             std::string cre = method + "\n" + host + "\n" + adress + "\n"
                               + "AccessKeyId=" + accessKey + "&SignatureMethod=HmacSHA256"
-                              + "&SignatureVersion=2&Timestamp=" + timeBuf;
+                              + "&SignatureVersion=2&Timestamp=" + timeBuf;           
             if (strcmp(param, "")) {
                 cre = cre + "&" + param;
             }

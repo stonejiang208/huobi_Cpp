@@ -36,17 +36,17 @@ namespace Huobi {
         this->dog = dog;
         this->host = host;
         this->connectionId = connectionCounter++;
-        if (host.find("api") == 0) {
-            this->subscriptionMarketUrl = "wss://";
-            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/ws";
-            this->subscriptionTradingUrl = "wss://";
-            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
-        } else {
-            this->subscriptionMarketUrl = "wss://";
-            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/api/ws";
-            this->subscriptionTradingUrl = "wss://";
-            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
-        }
+//        if (host.find("api") == 0) {
+//            this->subscriptionMarketUrl = "wss://";
+//            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/ws";
+//            this->subscriptionTradingUrl = "wss://";
+//            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
+//        } else {
+//            this->subscriptionMarketUrl = "wss://";
+//            this->subscriptionMarketUrl = this->subscriptionMarketUrl + host + "/api/ws";
+//            this->subscriptionTradingUrl = "wss://";
+//            this->subscriptionTradingUrl = this->subscriptionTradingUrl + host + "/ws/v1";
+//        }
     };
 
     void WebSocketConnection::connect(lws_context* context) {
@@ -86,7 +86,7 @@ namespace Huobi {
         AutoLock lock(mutex);
         sendBufferList.push_back(message);
         lwsl_user("Pre Send: %s \n", message.c_str());
-
+       
         if (client != nullptr) {
             lws_callback_on_writable(client);
         }
@@ -211,6 +211,7 @@ namespace Huobi {
         time_t t = time(NULL);
         struct tm *local = gmtime(&t);
         char timeBuf[100] = {0};
+             
         sprintf(timeBuf, "%04d-%02d-%02dT%02d%%3A%02d%%3A%02d",
                 local->tm_year + 1900,
                 local->tm_mon + 1,
@@ -237,7 +238,7 @@ namespace Huobi {
         writer.put("AccessKeyId", this->apiKey);
         writer.put("Signature", signa.c_str());
         writer.put("SignatureMethod", "HmacSHA256");
-        writer.put("Timestamp", buf);
+        writer.put("Timestamp", buf);       
         return writer.toJsonString();
     }
 
