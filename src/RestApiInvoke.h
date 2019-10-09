@@ -6,7 +6,7 @@
 #include "Utils/JsonDocument.h"
 #include "EtfResult.h"
 #include "Huobi/HuobiApiException.h"
-
+#include "RestApiJsonParser.h"
 namespace Huobi {
 
     class RestApiInvoke {
@@ -110,8 +110,8 @@ namespace Huobi {
 
             RestApiInvoke::checkResponse(json);
 
-            T val = (ptr->jsonParser)(json);
-
+ //         T val = (ptr->jsonParser)(json);
+ T val = ((ptr->restApiJsonParser).parseJson)(json);
             return val;
         }
     };

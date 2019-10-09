@@ -44,27 +44,28 @@ namespace Huobi {
 
 
         auto res = createRequestByGet<std::vector < Candlestick >> ("/market/history/kline", builder);
-        res->jsonParser = [this](JsonWrapper json) {
-            std::vector<Candlestick> cans;
-            JsonWrapper data = json.getJsonObjectOrArray("data");
-
-            for (int i = 0; i < data.size(); i++) {
-                JsonWrapper item = data.getJsonObjectAt(i);
-                Candlestick candlestick;
-                candlestick.timestamp =
-                        TimeService::convertCSTInSecondToUTC(item.getLong("id"));
-                candlestick.id = item.getLong("id");
-                candlestick.open = item.getDecimal("open");
-                candlestick.close = item.getDecimal("close");
-                candlestick.low = item.getDecimal("low");
-                candlestick.high = item.getDecimal("high");
-                candlestick.amount = item.getDecimal("amount");
-                candlestick.count = item.getLong("count");
-                candlestick.volume = item.getDecimal("vol");
-                cans.push_back(candlestick);
-            }
-            return cans;
-        };
+//        res->jsonParser = [this](JsonWrapper json) {
+//            std::vector<Candlestick> cans;
+//            JsonWrapper data = json.getJsonObjectOrArray("data");
+//
+//            for (int i = 0; i < data.size(); i++) {
+//                JsonWrapper item = data.getJsonObjectAt(i);
+//                Candlestick candlestick;
+//                candlestick.timestamp =
+//                        TimeService::convertCSTInSecondToUTC(item.getLong("id"));
+//                candlestick.id = item.getLong("id");
+//                candlestick.open = item.getDecimal("open");
+//                candlestick.close = item.getDecimal("close");
+//                candlestick.low = item.getDecimal("low");
+//                candlestick.high = item.getDecimal("high");
+//                candlestick.amount = item.getDecimal("amount");
+//                candlestick.count = item.getLong("count");
+//                candlestick.volume = item.getDecimal("vol");
+//                cans.push_back(candlestick);
+//            }
+//            return cans;
+//        };
+        res->restApiJsonParser = Candlestick::getDataParser();
         return res;
     }
 
@@ -78,25 +79,26 @@ namespace Huobi {
         builder.putUrl("symbol", symbol)
                 .putUrl("size", size);
         auto res = createRequestByGet<std::vector < Trade >> ("/market/history/trade", builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            std::vector<Trade> trades;
-            JsonWrapper dataArray = json.getJsonObjectOrArray("data");
-            for (int i = 0; i < dataArray.size(); i++) {
-                JsonWrapper item = dataArray.getJsonObjectAt(i);
-                JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
-                for (int j = 0; j < dataArrayIn.size(); j++) {
-                    JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
-                    Trade trade;
-                    trade.price = itemIn.getDecimal("price");
-                    trade.amount = itemIn.getDecimal("amount");
-                    trade.tradeId = itemIn.getString("id");
-                    trade.timestamp = TimeService::convertCSTInMillisecondToUTC(itemIn.getLong("ts"));
-                    trade.direction = TradeDirection::lookup(itemIn.getString("direction"));
-                    trades.push_back(trade);
-                }
-            }
-            return trades;
-        };
+//        res->jsonParser = [this](const JsonWrapper & json) {
+//            std::vector<Trade> trades;
+//            JsonWrapper dataArray = json.getJsonObjectOrArray("data");
+//            for (int i = 0; i < dataArray.size(); i++) {
+//                JsonWrapper item = dataArray.getJsonObjectAt(i);
+//                JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
+//                for (int j = 0; j < dataArrayIn.size(); j++) {
+//                    JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
+//                    Trade trade;
+//                    trade.price = itemIn.getDecimal("price");
+//                    trade.amount = itemIn.getDecimal("amount");
+//                    trade.tradeId = itemIn.getString("id");
+//                    trade.timestamp = TimeService::convertCSTInMillisecondToUTC(itemIn.getLong("ts"));
+//                    trade.direction = TradeDirection::lookup(itemIn.getString("direction"));
+//                    trades.push_back(trade);
+//                }
+//            }
+//            return trades;
+//        };
+        res->restApiJsonParser=Trade::getDataParser();
         return res;
 
     }

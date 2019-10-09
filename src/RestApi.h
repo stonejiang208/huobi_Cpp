@@ -3,7 +3,7 @@
 
 #include <functional>
 #include "Utils/JsonWrapper.h"
-
+#include "RestApiJsonParser.h"
 namespace Huobi {
 
     template <typename T>
@@ -31,6 +31,7 @@ namespace Huobi {
         }
     public:
         std::function<T(const JsonWrapper&) > jsonParser;
+        RestApiJsonParser<T> restApiJsonParser;
         std::string method;
     };
 
