@@ -4,7 +4,10 @@
 #include <vector>
 #include "Huobi/Enums.h"
 #include "Huobi/Balance.h"
-
+#include "/root/huobi_Cpp/src/TimeService.h"
+#include "/root/huobi_Cpp/src/RestApiJsonParser.h"
+#include "/root/huobi_Cpp/src/Utils/JsonWrapper.h"
+#include "Huobi/Decimal.h"
 namespace Huobi {
 
     /**
@@ -39,6 +42,31 @@ namespace Huobi {
                 }
             }
             return result;
+        }
+
+
+        static RestApiJsonParser<std::vector<Account> > getDataParser() {
+            RestApiJsonParser<std::vector < Account>> res;
+            res.parseJson = [](JsonWrapper json) {
+                std::vector<Account>accounts;
+                JsonWrapper data = json.getJsonObjectOrArray("data");
+                size_t size = data.size();
+                for (int i = 0; i < size; i++) {
+                    JsonWrapper item = data.getJsonObjectAt(i);
+                    Account account = parse(item);
+                    accounts.push_back(account);
+                }
+                return accounts;
+            };
+            return res;
+        }
+
+        static Account parse(JsonWrapper item) {
+            Account account;
+            account.id = item.getLong("id");
+            account.type = AccountType::lookup(item.getString("type"));
+            account.state = AccountState::lookup(item.getString("state"));
+            return account;
         }
 
     };

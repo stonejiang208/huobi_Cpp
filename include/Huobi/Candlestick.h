@@ -5,7 +5,6 @@
 #include "/root/huobi_Cpp/src/TimeService.h"
 #include "/root/huobi_Cpp/src/RestApiJsonParser.h"
 #include "/root/huobi_Cpp/src/Utils/JsonWrapper.h"
-#include "Huobi/Decimal.h"
 #include <vector>
 
 namespace Huobi {
@@ -58,11 +57,10 @@ namespace Huobi {
          * The query id.
          */
         long id = 0;
-    
 
         static RestApiJsonParser<std::vector<Candlestick> > getDataParser() {
 
-            RestApiJsonParser<std::vector < Candlestick>> res ;
+            RestApiJsonParser<std::vector < Candlestick>> res;
             res.parseJson = [](JsonWrapper json) {
                 std::vector<Candlestick> cans;
                 JsonWrapper data = json.getJsonObjectOrArray("data");

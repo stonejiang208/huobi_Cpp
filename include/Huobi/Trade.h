@@ -3,7 +3,6 @@
 
 #include<string>
 #include "Enums.h"
-#include "Decimal.h"
 #include "/root/huobi_Cpp/src/TimeService.h"
 #include "/root/huobi_Cpp/src/RestApiJsonParser.h"
 #include "/root/huobi_Cpp/src/Utils/JsonWrapper.h"
@@ -51,7 +50,7 @@ namespace Huobi {
                     JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
                     for (int j = 0; j < dataArrayIn.size(); j++) {
                         JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
-                        Trade trade=parse(itemIn);
+                        Trade trade = parse(itemIn);
                         trades.push_back(trade);
                     }
                 }
@@ -59,37 +58,17 @@ namespace Huobi {
             };
             return res;
         }
-            static Trade parse(JsonWrapper item) {
-                Trade trade;
-                trade.price = item.getDecimal("price");
-                trade.amount = item.getDecimal("amount");
-                trade.tradeId = item.getString("id");
-                trade.timestamp = TimeService::convertCSTInMillisecondToUTC(item.getLong("ts"));
-                trade.direction = TradeDirection::lookup(item.getString("direction"));
-                return trade;
-            }
 
-
-            /*  res->jsonParser = [this](const JsonWrapper & json) {
-                std::vector<Trade> trades;
-                JsonWrapper dataArray = json.getJsonObjectOrArray("data");
-                for (int i = 0; i < dataArray.size(); i++) {
-                    JsonWrapper item = dataArray.getJsonObjectAt(i);
-                    JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
-                    for (int j = 0; j < dataArrayIn.size(); j++) {
-                        JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
-                        Trade trade;
-                        trade.price = itemIn.getDecimal("price");
-                        trade.amount = itemIn.getDecimal("amount");
-                        trade.tradeId = itemIn.getString("id");
-                        trade.timestamp = TimeService::convertCSTInMillisecondToUTC(itemIn.getLong("ts"));
-                        trade.direction = TradeDirection::lookup(itemIn.getString("direction"));
-                        trades.push_back(trade);
-                    }
-                }
-                return trades;
-            };*/
-        };
-    }
+        static Trade parse(JsonWrapper item) {
+            Trade trade;
+            trade.price = item.getDecimal("price");
+            trade.amount = item.getDecimal("amount");
+            trade.tradeId = item.getString("id");
+            trade.timestamp = TimeService::convertCSTInMillisecondToUTC(item.getLong("ts"));
+            trade.direction = TradeDirection::lookup(item.getString("direction"));
+            return trade;
+        }
+    };
+}
 #endif /* TRADE_H */
 

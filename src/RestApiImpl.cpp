@@ -44,27 +44,27 @@ namespace Huobi {
 
 
         auto res = createRequestByGet<std::vector < Candlestick >> ("/market/history/kline", builder);
-//        res->jsonParser = [this](JsonWrapper json) {
-//            std::vector<Candlestick> cans;
-//            JsonWrapper data = json.getJsonObjectOrArray("data");
-//
-//            for (int i = 0; i < data.size(); i++) {
-//                JsonWrapper item = data.getJsonObjectAt(i);
-//                Candlestick candlestick;
-//                candlestick.timestamp =
-//                        TimeService::convertCSTInSecondToUTC(item.getLong("id"));
-//                candlestick.id = item.getLong("id");
-//                candlestick.open = item.getDecimal("open");
-//                candlestick.close = item.getDecimal("close");
-//                candlestick.low = item.getDecimal("low");
-//                candlestick.high = item.getDecimal("high");
-//                candlestick.amount = item.getDecimal("amount");
-//                candlestick.count = item.getLong("count");
-//                candlestick.volume = item.getDecimal("vol");
-//                cans.push_back(candlestick);
-//            }
-//            return cans;
-//        };
+        //        res->jsonParser = [this](JsonWrapper json) {
+        //            std::vector<Candlestick> cans;
+        //            JsonWrapper data = json.getJsonObjectOrArray("data");
+        //
+        //            for (int i = 0; i < data.size(); i++) {
+        //                JsonWrapper item = data.getJsonObjectAt(i);
+        //                Candlestick candlestick;
+        //                candlestick.timestamp =
+        //                        TimeService::convertCSTInSecondToUTC(item.getLong("id"));
+        //                candlestick.id = item.getLong("id");
+        //                candlestick.open = item.getDecimal("open");
+        //                candlestick.close = item.getDecimal("close");
+        //                candlestick.low = item.getDecimal("low");
+        //                candlestick.high = item.getDecimal("high");
+        //                candlestick.amount = item.getDecimal("amount");
+        //                candlestick.count = item.getLong("count");
+        //                candlestick.volume = item.getDecimal("vol");
+        //                cans.push_back(candlestick);
+        //            }
+        //            return cans;
+        //        };
         res->restApiJsonParser = Candlestick::getDataParser();
         return res;
     }
@@ -79,26 +79,26 @@ namespace Huobi {
         builder.putUrl("symbol", symbol)
                 .putUrl("size", size);
         auto res = createRequestByGet<std::vector < Trade >> ("/market/history/trade", builder);
-//        res->jsonParser = [this](const JsonWrapper & json) {
-//            std::vector<Trade> trades;
-//            JsonWrapper dataArray = json.getJsonObjectOrArray("data");
-//            for (int i = 0; i < dataArray.size(); i++) {
-//                JsonWrapper item = dataArray.getJsonObjectAt(i);
-//                JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
-//                for (int j = 0; j < dataArrayIn.size(); j++) {
-//                    JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
-//                    Trade trade;
-//                    trade.price = itemIn.getDecimal("price");
-//                    trade.amount = itemIn.getDecimal("amount");
-//                    trade.tradeId = itemIn.getString("id");
-//                    trade.timestamp = TimeService::convertCSTInMillisecondToUTC(itemIn.getLong("ts"));
-//                    trade.direction = TradeDirection::lookup(itemIn.getString("direction"));
-//                    trades.push_back(trade);
-//                }
-//            }
-//            return trades;
-//        };
-        res->restApiJsonParser=Trade::getDataParser();
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            std::vector<Trade> trades;
+        //            JsonWrapper dataArray = json.getJsonObjectOrArray("data");
+        //            for (int i = 0; i < dataArray.size(); i++) {
+        //                JsonWrapper item = dataArray.getJsonObjectAt(i);
+        //                JsonWrapper dataArrayIn = item.getJsonObjectOrArray("data");
+        //                for (int j = 0; j < dataArrayIn.size(); j++) {
+        //                    JsonWrapper itemIn = dataArrayIn.getJsonObjectAt(j);
+        //                    Trade trade;
+        //                    trade.price = itemIn.getDecimal("price");
+        //                    trade.amount = itemIn.getDecimal("amount");
+        //                    trade.tradeId = itemIn.getString("id");
+        //                    trade.timestamp = TimeService::convertCSTInMillisecondToUTC(itemIn.getLong("ts"));
+        //                    trade.direction = TradeDirection::lookup(itemIn.getString("direction"));
+        //                    trades.push_back(trade);
+        //                }
+        //            }
+        //            return trades;
+        //        };
+        res->restApiJsonParser = Trade::getDataParser();
         return res;
 
     }
@@ -106,27 +106,28 @@ namespace Huobi {
     RestApi<std::vector<Symbols>>*RestApiImpl::getSymbols() {
         UrlParamsBuilder builder;
         auto res = createRequestByGet<std::vector < Symbols >> ("/v1/common/symbols", builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            std::vector<Symbols> symbolsList;
-            JsonWrapper data = json.getJsonObjectOrArray("data");
-            for (int i = 0; i < data.size(); i++) {
-                JsonWrapper item = data.getJsonObjectAt(i);
-                Symbols symbols;
-                symbols.baseCurrency = item.getString("base-currency");
-                symbols.quoteCurrency = item.getString("quote-currency");
-                symbols.pricePrecision = item.getInt("price-precision");
-                symbols.amountPrecision = item.getInt("amount-precision");
-                symbols.symbolPartition = item.getString("symbol-partition");
-                symbols.symbol = item.getString("symbol");
-                symbols.state = SymbolState::lookup(item.getString("state"));
-                symbols.valuePrecision = item.getInt("value-precision");
-                symbols.minOrderAmt = item.getLong("min-order-amt");
-                symbols.maxOrderAmt = item.getLong("max-order-amt");
-                symbols.leverageRatio = item.getIntOrDefault("leverage-ratio", 0);
-                symbolsList.push_back(symbols);
-            }
-            return symbolsList;
-        };
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            std::vector<Symbols> symbolsList;
+        //            JsonWrapper data = json.getJsonObjectOrArray("data");
+        //            for (int i = 0; i < data.size(); i++) {
+        //                JsonWrapper item = data.getJsonObjectAt(i);
+        //                Symbols symbols;
+        //                symbols.baseCurrency = item.getString("base-currency");
+        //                symbols.quoteCurrency = item.getString("quote-currency");
+        //                symbols.pricePrecision = item.getInt("price-precision");
+        //                symbols.amountPrecision = item.getInt("amount-precision");
+        //                symbols.symbolPartition = item.getString("symbol-partition");
+        //                symbols.symbol = item.getString("symbol");
+        //                symbols.state = SymbolState::lookup(item.getString("state"));
+        //                symbols.valuePrecision = item.getInt("value-precision");
+        //                symbols.minOrderAmt = item.getLong("min-order-amt");
+        //                symbols.maxOrderAmt = item.getLong("max-order-amt");
+        //                symbols.leverageRatio = item.getIntOrDefault("leverage-ratio", 0);
+        //                symbolsList.push_back(symbols);
+        //            }
+        //            return symbolsList;
+        //        };
+        res->restApiJsonParser = Symbols::getDataParser();
         return res;
     }
 
@@ -150,38 +151,40 @@ namespace Huobi {
         UrlParamsBuilder builder;
         builder.putUrl("symbol", symbol);
         auto res = createRequestByGet<BestQuote>("/market/detail/merged", builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            BestQuote bestQuote;
-            bestQuote.timestamp = TimeService::convertCSTInMillisecondToUTC(json.getLong("ts"));
-            JsonWrapper tick = json.getJsonObjectOrArray("tick");
-            JsonWrapper askArray = tick.getJsonObjectOrArray("ask");
-            bestQuote.askPrice = askArray.getDecimalAt(0);
-            bestQuote.askAmount = askArray.getDecimalAt(1);
-            JsonWrapper bidArray = tick.getJsonObjectOrArray("bid");
-            bestQuote.bidPrice = bidArray.getDecimalAt(0);
-            bestQuote.bidAmount = bidArray.getDecimalAt(1);
-            return bestQuote;
-        };
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            BestQuote bestQuote;
+        //            bestQuote.timestamp = TimeService::convertCSTInMillisecondToUTC(json.getLong("ts"));
+        //            JsonWrapper tick = json.getJsonObjectOrArray("tick");
+        //            JsonWrapper askArray = tick.getJsonObjectOrArray("ask");
+        //            bestQuote.askPrice = askArray.getDecimalAt(0);
+        //            bestQuote.askAmount = askArray.getDecimalAt(1);
+        //            JsonWrapper bidArray = tick.getJsonObjectOrArray("bid");
+        //            bestQuote.bidPrice = bidArray.getDecimalAt(0);
+        //            bestQuote.bidAmount = bidArray.getDecimalAt(1);
+        //            return bestQuote;
+        //        };
+        res->restApiJsonParser = BestQuote::getParser();
         return res;
     }
 
     RestApi<std::vector<Account>>*RestApiImpl::getAccounts() {
         UrlParamsBuilder builder;
         auto res = createRequestByGetWithSignature<std::vector < Account >> ("/v1/account/accounts", builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            std::vector<Account>accounts;
-            JsonWrapper data = json.getJsonObjectOrArray("data");
-            size_t size = data.size();
-            for (int i = 0; i < size; i++) {
-                JsonWrapper item = data.getJsonObjectAt(i);
-                Account account;
-                account.id = item.getLong("id");
-                account.type = AccountType::lookup(item.getString("type"));
-                account.state = AccountState::lookup(item.getString("state"));
-                accounts.push_back(account);
-            }
-            return accounts;
-        };
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            std::vector<Account>accounts;
+        //            JsonWrapper data = json.getJsonObjectOrArray("data");
+        //            size_t size = data.size();
+        //            for (int i = 0; i < size; i++) {
+        //                JsonWrapper item = data.getJsonObjectAt(i);
+        //                Account account;
+        //                account.id = item.getLong("id");
+        //                account.type = AccountType::lookup(item.getString("type"));
+        //                account.state = AccountState::lookup(item.getString("state"));
+        //                accounts.push_back(account);
+        //            }
+        //            return accounts;
+        //        };
+        res->restApiJsonParser = Account::getDataParser();
         return res;
     }
 
@@ -190,20 +193,21 @@ namespace Huobi {
         char buf[100];
         sprintf(buf, "/v1/account/accounts/%ld/balance", account.id);
         auto res = createRequestByGetWithSignature<std::vector < Balance >> ((const char*) buf, builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            std::vector<Balance> balances;
-            JsonWrapper data = json.getJsonObjectOrArray("data");
-            JsonWrapper list = data.getJsonObjectOrArray("list");
-            for (int i = 0; i < list.size(); i++) {
-                JsonWrapper item = list.getJsonObjectAt(i);
-                Balance balance;
-                balance.balance = item.getDecimal("balance");
-                balance.currency = item.getString("currency");
-                balance.type = BalanceType::lookup(item.getString("type"));
-                balances.push_back(balance);
-            }
-            return balances;
-        };
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            std::vector<Balance> balances;
+        //            JsonWrapper data = json.getJsonObjectOrArray("data");
+        //            JsonWrapper list = data.getJsonObjectOrArray("list");
+        //            for (int i = 0; i < list.size(); i++) {
+        //                JsonWrapper item = list.getJsonObjectAt(i);
+        //                Balance balance;
+        //                balance.balance = item.getDecimal("balance");
+        //                balance.currency = item.getString("currency");
+        //                balance.type = BalanceType::lookup(item.getString("type"));
+        //                balances.push_back(balance);
+        //            }
+        //            return balances;
+        //        };
+        res->restApiJsonParser = Balance::getDataParser();
         return res;
 
     }
@@ -214,33 +218,34 @@ namespace Huobi {
         builder.putUrl("symbol", symbol)
                 .putUrl("type", "step0");
         auto res = createRequestByGet<PriceDepth>("/market/depth", builder);
-        res->jsonParser = [this, size](const JsonWrapper & json) {
-            PriceDepth price;
-            JsonWrapper tick = json.getJsonObjectOrArray("tick");
-            long ts = TimeService::convertCSTInMillisecondToUTC(tick.getLong("ts"));
-            JsonWrapper bids = tick.getJsonObjectOrArray("bids");
-            JsonWrapper asks = tick.getJsonObjectOrArray("asks");
-            std::vector<DepthEntry> bidList;
-            std::vector<DepthEntry> askList;
-            for (int i = 0; i < size; i++) {
-                JsonWrapper bidEntry = bids.getArrayAt(i);
-                DepthEntry entry;
-                entry.price = bidEntry.getDecimalAt(0);
-                entry.amount = bidEntry.getDecimalAt(1);
-                bidList.push_back(entry);
-            }
-            for (int i = 0; i < size; i++) {
-                JsonWrapper askEntry = asks.getArrayAt(i);
-                DepthEntry entry;
-                entry.price = askEntry.getDecimalAt(0);
-                entry.amount = askEntry.getDecimalAt(1);
-                askList.push_back(entry);
-            }
-            price.bids = bidList;
-            price.asks = askList;
-            price.timestamp = ts;
-            return price;
-        };
+        //        res->jsonParser = [this, size](const JsonWrapper & json) {
+        //            PriceDepth price;
+        //            JsonWrapper tick = json.getJsonObjectOrArray("tick");
+        //            long ts = TimeService::convertCSTInMillisecondToUTC(tick.getLong("ts"));
+        //            JsonWrapper bids = tick.getJsonObjectOrArray("bids");
+        //            JsonWrapper asks = tick.getJsonObjectOrArray("asks");
+        //            std::vector<DepthEntry> bidList;
+        //            std::vector<DepthEntry> askList;
+        //            for (int i = 0; i < size; i++) {
+        //                JsonWrapper bidEntry = bids.getArrayAt(i);
+        //                DepthEntry entry;
+        //                entry.price = bidEntry.getDecimalAt(0);
+        //                entry.amount = bidEntry.getDecimalAt(1);
+        //                bidList.push_back(entry);
+        //            }
+        //            for (int i = 0; i < size; i++) {
+        //                JsonWrapper askEntry = asks.getArrayAt(i);
+        //                DepthEntry entry;
+        //                entry.price = askEntry.getDecimalAt(0);
+        //                entry.amount = askEntry.getDecimalAt(1);
+        //                askList.push_back(entry);
+        //            }
+        //            price.bids = bidList;
+        //            price.asks = askList;
+        //            price.timestamp = ts;
+        //            return price;
+        //        };
+        res->restApiJsonParser = PriceDepth::getTickParser(size);
         return res;
     }
 
@@ -258,28 +263,30 @@ namespace Huobi {
                 .putUrl("direct", request.direct.getValue());
 
         auto res = createRequestByGetWithSignature<std::vector < Withdraw >> ("/v1/query/deposit-withdraw", builder);
-        res->jsonParser = [this](const JsonWrapper & json) {
-            std::vector<Withdraw> withdraws;
-            JsonWrapper data = json.getJsonObjectOrArray("data");
-            for (int i = 0; i < data.size(); i++) {
-                JsonWrapper item = data.getJsonObjectAt(i);
-                Withdraw withdraw;
-                withdraw.id = item.getLong("id");
-                withdraw.currency = item.getString("currency");
-                withdraw.txHash = item.getString("tx-hash");
-                withdraw.amount = item.getDecimal("amount");
-                withdraw.address = item.getString("address");
-                withdraw.addressTag = item.getString("address-tag");
-                withdraw.fee = item.getDecimal("fee");
-                withdraw.withdrawState = WithdrawState::lookup(item.getString("state"));
-                withdraw.createdTimestamp =
-                        TimeService::convertCSTInMillisecondToUTC(item.getLong("created-at"));
-                withdraw.updatedTimestamp =
-                        TimeService::convertCSTInMillisecondToUTC(item.getLong("updated-at"));
-                withdraws.push_back(withdraw);
-            }
-            return withdraws;
-        };
+        //        res->jsonParser = [this](const JsonWrapper & json) {
+        //            std::vector<Withdraw> withdraws;
+        //            JsonWrapper data = json.getJsonObjectOrArray("data");
+        //            for (int i = 0; i < data.size(); i++) {
+        //                JsonWrapper item = data.getJsonObjectAt(i);
+        //                Withdraw withdraw;
+        //                withdraw.id = item.getLong("id");
+        //                withdraw.currency = item.getString("currency");
+        //                withdraw.txHash = item.getString("tx-hash");
+        //                withdraw.amount = item.getDecimal("amount");
+        //                withdraw.address = item.getString("address");
+        //                withdraw.addressTag = item.getString("address-tag");
+        //                withdraw.fee = item.getDecimal("fee");
+        //                withdraw.withdrawState = WithdrawState::lookup(item.getString("state"));
+        //                withdraw.createdTimestamp =
+        //                        TimeService::convertCSTInMillisecondToUTC(item.getLong("created-at"));
+        //                withdraw.updatedTimestamp =
+        //                        TimeService::convertCSTInMillisecondToUTC(item.getLong("updated-at"));
+        //                withdraws.push_back(withdraw);
+        //            }
+        //            return withdraws;
+        //        };
+
+        res->restApiJsonParser = Withdraw::getDataParser();
         return res;
     }
 
