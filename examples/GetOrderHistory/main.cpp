@@ -12,7 +12,6 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-
     RequestClient* client = createRequestClient("xxx", "xxx");
     OrdersHistoryRequest ordersHistoryReq;
     vector<Order> orders = client->getOrderHistory(ordersHistoryReq);

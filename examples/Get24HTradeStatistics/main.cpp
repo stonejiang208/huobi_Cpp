@@ -11,7 +11,7 @@ using namespace Huobi;
 using namespace std;
 
 int main(int argc, char** argv) {
-    RequestClient* client = createRequestClient();
+    RequestClient* client = createRequestClient();    
     TradeStatistics statistics = client->get24HTradeStatistics("btcusdt");
     cout << "---- Statistics ----" << endl;
     cout << "Timestamp: " << statistics.timestamp << endl;

@@ -11,7 +11,7 @@
 #include <sstream>
 #include<ctime>
 #include "../../include/Huobi/Decimal.h"
-#include "Huobi/HuobiApiException.h"
+#include "../exception/SDKException.h"
 
 namespace Huobi {
 
@@ -116,7 +116,7 @@ namespace Huobi {
 
         UrlParamsBuilder& putPost(const std::string& pre, const std::list<std::string>& lparam) {
             if (!lparam.size()) {
-                throw  HuobiApiException(HuobiApiException::INPUT_ERROR, "list should not null");
+                throw  SDKException(SDKException::INPUT_ERROR, "list should not null");
             }
             if(!isPost)
                 isPost=true;

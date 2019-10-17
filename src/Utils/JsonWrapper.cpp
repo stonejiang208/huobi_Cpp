@@ -1,7 +1,7 @@
 #include <string>
 #include "JsonWrapper.h"
 
-#include "Huobi/HuobiApiException.h"
+#include "../exception/SDKException.h"
 
 
 
@@ -20,7 +20,8 @@ namespace Huobi {
     void JsonWrapper::checkMandatoryField(const char* name) const {
         if (!object.HasMember(name)) {
             // TODO throw exception
-            throw HuobiApiException(HuobiApiException::INPUT_ERROR, "error field");
+             printf("------no filed------\n");
+            throw SDKException(SDKException::INPUT_ERROR, "error field");
         }
     }
 
@@ -80,7 +81,9 @@ namespace Huobi {
     }
 
     JsonWrapper JsonWrapper::getJsonObjectOrArray(const char* name) const {
+        printf("------before check field------\n");
         checkMandatoryField(name);
+        printf("------after check field------\n");
         return object[name];
     }
 
@@ -113,7 +116,7 @@ namespace Huobi {
 
     void JsonWrapper::checkSize(int index) const {
         if (index < 0 && index >= object.Size()) {
-            throw HuobiApiException(HuobiApiException::INPUT_ERROR, "error size!");
+            throw SDKException(SDKException::INPUT_ERROR, "error size!");
         }
     }
 

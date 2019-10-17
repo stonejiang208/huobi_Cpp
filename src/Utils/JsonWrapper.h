@@ -2,7 +2,7 @@
 #define JSONWRAPPER_H
 
 #include <string>
-#include "Huobi/Decimal.h"
+#include "constant/Decimal.h"
 #include "rapidjson/document.h"
 
 namespace Huobi {
