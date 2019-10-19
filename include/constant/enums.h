@@ -358,7 +358,7 @@ private:
         static TransferFuturesType futures_to_pro;
         static TransferFuturesType pro_to_futures;
     };
-    
+
     class DepthStep : public BaseEnumClass<DepthStep> {
         DEFINE_ENUM_CLASS(DepthStep);
     public:
@@ -374,8 +374,18 @@ private:
         DEFINE_ENUM_CLASS(ExchangeEnum);
     public:
         static ExchangeEnum huobi;
-        
+
     };
+
+    class ConnectionStateEnum : public BaseEnumClass<ConnectionStateEnum> {
+        DEFINE_ENUM_CLASS(ConnectionStateEnum);
+    public:
+        static ConnectionStateEnum IDLE;
+        static ConnectionStateEnum DELAY_CONNECT;
+        static ConnectionStateEnum CONNECTED;
+        static ConnectionStateEnum CLOSED_ON_ERROR;
+    };
+
 }
 
 

@@ -19,8 +19,8 @@ namespace Huobi {
     struct HuobiOptions/* : public Options */ {
         const char* restHost = "https://api.huobi.so";
         const char* websocketHost = "wss://api.huobi.so";
-        const char* apiKey;
-        const char* secretKey;
+        const char* apiKey="";
+        const char* secretKey="";
 
         //        exchange=ExchangeEnum::huobi;
 

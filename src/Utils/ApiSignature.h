@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "base64.h"
 #include <openssl/hmac.h>
-
+#include"../exception/SDKException.h"
 namespace Huobi {
 
     class ApiSignature {
@@ -67,7 +67,7 @@ namespace Huobi {
         static std::string CreateSignature(std::string host, std::string accessKey, std::string secretKey,
                                            std::string adress, std::string method, char *timeBuf, const char *param) {
             if (accessKey.empty() || secretKey.empty()) {
-                throw HuobiApiException(HuobiApiException::KEY_MISSING, "API key and secret key are required");
+                throw  SDKException( SDKException::KEY_MISSING, "API key and secret key are required");
             }
             std::string cre = method + "\n" + host + "\n" + adress + "\n"
                               + "AccessKeyId=" + accessKey + "&SignatureMethod=HmacSHA256"

@@ -13,7 +13,7 @@
 //#include "Huobi/HuobiClient.h"
 #include "MarketClient.h"
 #include "../../src/options/HuobiOptions.h"
-#include "Huobi/HuobiMarketService.h"
+#include "../../src/Huobi/HuobiMarketService.h"
 
 #include<iostream>
 #include<vector>
@@ -34,17 +34,28 @@ int main(int argc, char** argv) {
 //        cout << "Volume: " << candlestick.volume << endl;
 //    }
     HuobiOptions op;
-    CandlestickRequest req("btcusdt",CandlestickInterval::day1,20);
+    //CandlestickRequest req("btcusdt",CandlestickInterval::day1);
     MarketClient* client=new HuobiMarketService(op);
-    vector<Candlestick>cans=client->getCandlestick(req);
-    
-    for (Candlestick candlestick : cans) {
-       cout << "Id: " << candlestick.id << endl;
-        cout << "High: " << candlestick.high << endl;
-        cout << "Low: " << candlestick.low << endl;
-        cout << "Open: " << candlestick.open << endl;
-        cout << "Close: " << candlestick.close << endl;
-        cout << "Volume: " << candlestick.volume << endl;
-    }
+//    vector<Candlestick>cans=client->getCandlestick(req);
+//    
+//    for (Candlestick candlestick : cans) {
+//       cout << "Id: " << candlestick.id << endl;
+//        cout << "High: " << candlestick.high << endl;
+//        cout << "Low: " << candlestick.low << endl;
+//        cout << "Open: " << candlestick.open << endl;
+//        cout << "Close: " << candlestick.close << endl;
+//        cout << "Volume: " << candlestick.volume << endl;
+//    }
+    SubCandlestickRequest req("btcusdt",CandlestickInterval::min1);
+    client->subCandlestick(req,[](CandlestickEvent candlestickEvent) {
+
+        cout << "Timestamp: " << candlestickEvent.ts << endl;
+        cout << "High: " << candlestickEvent.candlestick.high << endl;
+        cout << "Low: " << candlestickEvent.candlestick.low << endl;
+        cout << "Open: " << candlestickEvent.candlestick.open << endl;
+        cout << "Close: " << candlestickEvent.candlestick.close << endl;
+        cout << "Volume: " << candlestickEvent.candlestick.volume << endl;
+    });
+           
    
 }

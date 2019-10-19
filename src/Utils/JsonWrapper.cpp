@@ -20,7 +20,6 @@ namespace Huobi {
     void JsonWrapper::checkMandatoryField(const char* name) const {
         if (!object.HasMember(name)) {
             // TODO throw exception
-             printf("------no filed------\n");
             throw SDKException(SDKException::INPUT_ERROR, "error field");
         }
     }
@@ -81,9 +80,7 @@ namespace Huobi {
     }
 
     JsonWrapper JsonWrapper::getJsonObjectOrArray(const char* name) const {
-        printf("------before check field------\n");
         checkMandatoryField(name);
-        printf("------after check field------\n");
         return object[name];
     }
 

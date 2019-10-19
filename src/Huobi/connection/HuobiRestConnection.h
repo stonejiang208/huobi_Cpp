@@ -88,13 +88,16 @@ namespace Huobi {
           //  res->setPostBody(builder.getPostBody());
 //执行连接,返回内容
             std::string sBuffer = ConnectionFactory::execute(res);
+             std::cout<<"sbuffer:"<<std::endl;
+            std::cout<<sBuffer<<std::endl;
+            JsonDocument* djson =new JsonDocument();
+            JsonWrapper json = djson->parseFromString(sBuffer.c_str());
+//检查响应体         
            
-            JsonDocument djson;
-            JsonWrapper json = djson.parseFromString(sBuffer.c_str());
-//检查响应体
-            
             checkResponse(json);
-        
+           
+          //  delete res;
+            printf("return \n");
             return json;
 
         }

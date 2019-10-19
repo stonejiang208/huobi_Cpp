@@ -153,8 +153,13 @@ namespace Huobi {
     DepthStep DepthStep::step4 = DepthStep("step4");
     DepthStep DepthStep::step5 = DepthStep("step5");
 
-
     ExchangeEnum ExchangeEnum::huobi = ExchangeEnum("huobi");
+
+    ConnectionStateEnum ConnectionStateEnum::IDLE = ConnectionStateEnum("IDLE");
+    ConnectionStateEnum ConnectionStateEnum::DELAY_CONNECT = ConnectionStateEnum("DELAY_CONNECT");
+    ConnectionStateEnum ConnectionStateEnum::CONNECTED = ConnectionStateEnum("CONNECTED");
+    ConnectionStateEnum ConnectionStateEnum::CLOSED_ON_ERROR = ConnectionStateEnum("CLOSED_ON_ERROR");
+
 
 
 }

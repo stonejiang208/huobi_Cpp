@@ -139,7 +139,7 @@
 //        }
 //    }
 //
-//    void WebSocketConnection::onMessage(const char* message) {
+    //void WebSocketConnection::onMessage(const char* message) {
 //        lwsl_user("RX: %s \n", message);   
 //        lastReceivedTime = TimeService::getCurrentTimeStamp();
 //
@@ -288,5 +288,5 @@
 //        dog->onClosedNormally(this);
 //    }
 //}
-//
+// 
 //

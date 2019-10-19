@@ -17,7 +17,6 @@
 
 #include <vector>
 #include "constant/Decimal.h"
-#include "constant/enums.h"
 
 namespace Huobi {
 
