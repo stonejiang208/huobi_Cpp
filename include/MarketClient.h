@@ -22,10 +22,12 @@
 #include "model/market/Candlestick.h"
 #include "model/market/MarketDetailMerged.h"
 #include "model/market/CandlestickEvent.h"
+#include"model/market/MarketDetail.h"
 
 #include "req/market/CandlestickRequest.h"
 #include "req/market/MarketDetailMergedRequest.h"
 #include "req/market/SubCandlestickRequest.h"
+#include "req/market/MarketDetailRequest.h"
 namespace Huobi {
 
     /**
@@ -80,6 +82,8 @@ namespace Huobi {
         //       
 
         virtual MarketDetailMerged getMarketDetailMerged(const MarketDetailMergedRequest& request) = 0;
+
+        virtual MarketDetail getMarketDetail(const MarketDetailRequest& request) = 0;
 
         //        /**
         //         * Get all the trading assets and currencies supported in huobi.pro. The information of trading

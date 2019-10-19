@@ -21,33 +21,35 @@ using namespace Huobi;
 using namespace std;
 
 int main(int argc, char** argv) {
-  //  RequestClient* client = createRequestClient();
-//    vector<Candlestick>candelves = client->getLatestCandlestick("btcusdt", CandlestickInterval::min1);
-//    cout << "---- 1 min candlestick for btcusdt ----" << endl;
-//
-//    for (Candlestick candlestick : candelves) {
-//        cout << "Timestamp: " << candlestick.timestamp << endl;
-//        cout << "High: " << candlestick.high << endl;
-//        cout << "Low: " << candlestick.low << endl;
-//        cout << "Open: " << candlestick.open << endl;
-//        cout << "Close: " << candlestick.close << endl;
-//        cout << "Volume: " << candlestick.volume << endl;
-//    }
+    //  RequestClient* client = createRequestClient();
+    //    vector<Candlestick>candelves = client->getLatestCandlestick("btcusdt", CandlestickInterval::min1);
+    //    cout << "---- 1 min candlestick for btcusdt ----" << endl;
+    //
+    //    for (Candlestick candlestick : candelves) {
+    //        cout << "Timestamp: " << candlestick.timestamp << endl;
+    //        cout << "High: " << candlestick.high << endl;
+    //        cout << "Low: " << candlestick.low << endl;
+    //        cout << "Open: " << candlestick.open << endl;
+    //        cout << "Close: " << candlestick.close << endl;
+    //        cout << "Volume: " << candlestick.volume << endl;
+    //    }
     HuobiOptions op;
     //CandlestickRequest req("btcusdt",CandlestickInterval::day1);
-    MarketClient* client=new HuobiMarketService(op);
-//    vector<Candlestick>cans=client->getCandlestick(req);
-//    
-//    for (Candlestick candlestick : cans) {
-//       cout << "Id: " << candlestick.id << endl;
-//        cout << "High: " << candlestick.high << endl;
-//        cout << "Low: " << candlestick.low << endl;
-//        cout << "Open: " << candlestick.open << endl;
-//        cout << "Close: " << candlestick.close << endl;
-//        cout << "Volume: " << candlestick.volume << endl;
-//    }
-    SubCandlestickRequest req("btcusdt",CandlestickInterval::min1);
-    client->subCandlestick(req,[](CandlestickEvent candlestickEvent) {
+    MarketClient* client = new HuobiMarketService(op);
+    //    vector<Candlestick>cans=client->getCandlestick(req);
+    //    
+    //    for (Candlestick candlestick : cans) {
+    //       cout << "Id: " << candlestick.id << endl;
+    //        cout << "High: " << candlestick.high << endl;
+    //        cout << "Low: " << candlestick.low << endl;
+    //        cout << "Open: " << candlestick.open << endl;
+    //        cout << "Close: " << candlestick.close << endl;
+    //        cout << "Volume: " << candlestick.volume << endl;
+    //    }
+    SubCandlestickRequest req("btcusdt,eosusdt", CandlestickInterval::min1);
+
+
+    client->subCandlestick(req, [](CandlestickEvent candlestickEvent) {
 
         cout << "Timestamp: " << candlestickEvent.ts << endl;
         cout << "High: " << candlestickEvent.candlestick.high << endl;
@@ -56,6 +58,6 @@ int main(int argc, char** argv) {
         cout << "Close: " << candlestickEvent.candlestick.close << endl;
         cout << "Volume: " << candlestickEvent.candlestick.volume << endl;
     });
-           
-   
+
+
 }

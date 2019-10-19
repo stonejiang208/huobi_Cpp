@@ -23,6 +23,7 @@
 
 #include "parser/market/CandlestickParser.h"
 #include "parser/market/MarketDetailMergedParser.h"
+#include "parser/market/MarketDetailParser.h"
 #include "../options/HuobiOptions.h"
 
 namespace Huobi {
@@ -40,24 +41,25 @@ namespace Huobi {
         const char* REST_MARKET_TRADE_PATH = "/market/trade";
         const char* REST_MARKET_HISTORY_TRADE_PATH = "/market/history/trade";
     public:
-        std::string WEBSOCKET_CANDLESTICK_TOPIC = "market.$symbol.kline.$period";
-        std::string WEBSOCKET_MARKET_DETAIL_TOPIC = "market.$symbol.detail";
-        std::string WEBSOCKET_MARKET_DEPTH_TOPIC = "market.$symbol.depth.$type";
-        std::string WEBSOCKET_MARKET_TRADE_TOPIC = "market.$symbol.trade.detail";
-        std::string WEBSOCKET_MARKET_BBO_TOPIC = "market.$symbol.bbo";
+        const std::string WEBSOCKET_CANDLESTICK_TOPIC = "market.$symbol.kline.$period";
+        const std::string WEBSOCKET_MARKET_DETAIL_TOPIC = "market.$symbol.detail";
+        const std::string WEBSOCKET_MARKET_DEPTH_TOPIC = "market.$symbol.depth.$type";
+        const std::string WEBSOCKET_MARKET_TRADE_TOPIC = "market.$symbol.trade.detail";
+        const std::string WEBSOCKET_MARKET_BBO_TOPIC = "market.$symbol.bbo";
 
 
     public:
 
         HuobiMarketService(HuobiOptions& op) {
-            options=op;
+            options = op;
             restConnection = new HuobiRestConnection(op);
         }
 
         std::vector<Candlestick> getCandlestick(const CandlestickRequest& request) override;
-        void subCandlestick(const SubCandlestickRequest& req,  const std::function<void( const CandlestickEvent&) > callback) override;
+        void subCandlestick(const SubCandlestickRequest& req, const std::function<void( const CandlestickEvent&) > callback) override;
 
         MarketDetailMerged getMarketDetailMerged(const MarketDetailMergedRequest& request) override;
+        MarketDetail getMarketDetail(const MarketDetailRequest& request) override;
 
 
     };

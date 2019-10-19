@@ -33,24 +33,24 @@ namespace Huobi {
     }
 
     void HuobiMarketService::subCandlestick(const SubCandlestickRequest& req, const std::function<void( const CandlestickEvent&) > callback) {
-
         InputChecker::checker()
                 ->shouldNotNull(req.interval.getValue(), "interval")
                 ->checkCallback(callback);
         std::list<std::string> symbols = SymbolUtils::parseSymbols(req.symbol.c_str());
-
         std::list<std::string> commandList;
         for (std::string symbol : symbols) {
-            std::string topic = WEBSOCKET_MARKET_DETAIL_TOPIC.replace(WEBSOCKET_MARKET_DETAIL_TOPIC.find("$symbol"), 7, symbol);
-            topic = topic.replace(topic.find("$period"), 7, req.interval.getValue());
+            std::string topic = WEBSOCKET_CANDLESTICK_TOPIC;
+            topic.replace(topic.find("$symbol"), 7, symbol);
+            topic.replace(topic.find("$period"), 7, req.interval.getValue());
+            std::cout << topic << std::endl;
+
             JsonWriter writer;
             writer.put("sub", topic);
             writer.put("id", std::to_string(TimeService::getCurrentTimeStamp()));
             commandList.push_back(writer.toJsonString());
 
         }
-        
-        HuobiWebSocketConnection<CandlestickEvent>::createMarketConnection(commandList, callback, options,CandlestickEventParser::parse );
+        HuobiWebSocketConnection<CandlestickEvent>::createMarketConnection(commandList, callback, options, CandlestickEventParser::parse);
     }
 
     MarketDetailMerged HuobiMarketService::getMarketDetailMerged(const MarketDetailMergedRequest& request) {
@@ -65,6 +65,17 @@ namespace Huobi {
         return marketDetailMerged;
     }
 
+    MarketDetail HuobiMarketService::getMarketDetail(const MarketDetailRequest& request) {
+        
+        InputChecker::checker()->checkSymbol(request.symbol);
+        UrlParamsBuilder builder;
+        builder.putUrl("symbol", request.symbol);
+        JsonWrapper json = restConnection->executeGet(REST_MARKET_DETAIL_PATH, builder);
+
+        JsonWrapper tick = json.getJsonObjectOrArray("tick");
+        MarketDetail marketDetail = MarketDetailParser::parse(tick);
+        return marketDetail;
+    }
 
 
 }

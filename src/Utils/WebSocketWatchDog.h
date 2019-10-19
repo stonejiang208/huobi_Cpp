@@ -30,13 +30,14 @@ namespace Huobi {
         static void onClosedNormally(WebSocketConnection* connection);
         static WebSocketWatchDog* dog;
 
-        ~WebSocketWatchDog() {
+        static std::list<WebSocketConnection*> connectionList;
+        static std::mutex mutex;
 
+        ~WebSocketWatchDog() {
             dogthread.join();
         }
     private:
-        static std::list<WebSocketConnection*> connectionList;
-        static std::mutex mutex;
+
         // bool runningFlag;
         std::thread dogthread;
         WebSocketWatchDog();

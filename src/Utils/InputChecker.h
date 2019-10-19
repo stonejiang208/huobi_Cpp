@@ -63,7 +63,6 @@ namespace Huobi {
         }
 
         InputChecker* checkSymbol(const std::string& symbol) {
-            printf("checkSymbol\n");
             if (symbol.empty()) {
                 throw SDKException(SDKException::INPUT_ERROR,
                         "[Input] Symbol is mandatory");

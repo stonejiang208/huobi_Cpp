@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-#include "HuobiWebSocketConnection.h"
-namespace Huobi {
-    template <typename T>
-    int HuobiWebSocketConnection<T>::connectionCounter = 0;
-    
-     
-}
+//#include "HuobiWebSocketConnection.h"
+//namespace Huobi {
+//    template <typename T>
+//    int HuobiWebSocketConnection<T>::connectionCounter = 0;
+//    
+//     
+//}

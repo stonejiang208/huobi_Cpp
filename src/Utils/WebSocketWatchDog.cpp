@@ -65,11 +65,13 @@ namespace Huobi {
 
     }
     WebSocketWatchDog* WebSocketWatchDog::dog = new WebSocketWatchDog();
-    
+
     int WebSocketWatchDog::receiveLimitMs = 60000;
-    
+
     int WebSocketWatchDog::connectionDelayOnFailure = 15;
 
+    std::list<WebSocketConnection*> WebSocketWatchDog::connectionList;
+    std::mutex WebSocketWatchDog::mutex;
 }
 
 

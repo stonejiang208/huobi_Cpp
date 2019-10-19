@@ -322,9 +322,9 @@ namespace Huobi {
 
     private:
         std::list<std::string> commandList;
-         std::function<void(const T&) > callback;
+        std::function<void(const T&) > callback;
         HuobiOptions op;
-        std::function < T( JsonWrapper&) > JsonParser;
+        std::function < T(JsonWrapper&) > JsonParser;
         int delayInSecond = 0;
         lws*wsi;
         ConnectionStateEnum state;
@@ -335,9 +335,9 @@ namespace Huobi {
 
         HuobiWebSocketConnection(
                 std::list<std::string>& commandList,
-                 std::function<void( const T&) > callback,
+                std::function<void( const T&) > callback,
                 HuobiOptions& op,
-                std::function < T( JsonWrapper&) > JsonParser) {
+                std::function < T(JsonWrapper&) > JsonParser) {
             this->commandList = commandList;
             this->callback = callback;
             this->op = op;
@@ -359,9 +359,9 @@ namespace Huobi {
 
         static void createMarketConnection(
                 std::list<std::string>& commandList,
-                 std::function<void(const T&) > callback,
+                std::function<void(const T&) > callback,
                 HuobiOptions& op,
-                std::function < T( JsonWrapper&) > JsonParser) {
+                std::function < T(JsonWrapper&) > JsonParser) {
 
             HuobiWebSocketConnection* huobiWebSocketConnection = new HuobiWebSocketConnection<T>(commandList, callback, op, JsonParser);
             ConnectionFactory::createWebSocket(huobiWebSocketConnection, op.websocketHost, "/ws");
@@ -369,6 +369,8 @@ namespace Huobi {
 
 
     };
+    template <typename T>
+    int HuobiWebSocketConnection<T>::connectionCounter = 0;
 
 }
 

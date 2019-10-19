@@ -22,15 +22,15 @@
 namespace Huobi {
 
     struct WebSocketConnection {
-       virtual void onOpen(lws* ws) = 0;
-       virtual void onMessage(const char* message,size_t len) = 0;
-       virtual void disconnect() = 0;
+        virtual void onOpen(lws* ws) = 0;
+        virtual void onMessage(const char* message, size_t len) = 0;
+        virtual void disconnect() = 0;
         virtual ConnectionStateEnum getConnectState() = 0;
 
-virtual bool send() = 0;
-       virtual long getLastReceivedTime() = 0;
-       virtual void reConnect() = 0;
-virtual void reConnect(int delay) = 0;
+        virtual bool send() = 0;
+        virtual long getLastReceivedTime() = 0;
+        virtual void reConnect() = 0;
+        virtual void reConnect(int delay) = 0;
     };
 
 }
