@@ -19,7 +19,6 @@ int main(int argc, char** argv) {
     MarketDetailMergedRequest req("btcusdt");
     MarketClient* client = new HuobiMarketService(op);
     MarketDetailMerged marketDetailMerged = client->getMarketDetailMerged(req);
-
     cout << "Id: " << marketDetailMerged.id << endl;
     cout << "High: " << marketDetailMerged.high << endl;
     cout << "Low: " << marketDetailMerged.low << endl;

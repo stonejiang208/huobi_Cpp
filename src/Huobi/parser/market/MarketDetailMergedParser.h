@@ -19,7 +19,7 @@ namespace Huobi {
     class MarketDetailMergedParser {
     public:
 
-        static MarketDetailMerged parse(JsonWrapper json) {
+        static MarketDetailMerged parse(JsonWrapper& json) {
             MarketDetailMerged marketDetailMerged;
             marketDetailMerged.id = json.getLong("id");
             marketDetailMerged.amount = json.getDecimal("amount");

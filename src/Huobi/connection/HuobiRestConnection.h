@@ -22,7 +22,8 @@
 #include "../../Utils/UrlParamsBuilder.h"
 #include "../../EtfResult.h"
 #include "/root/huobi_Cpp/src/Utils/JsonWrapper.h"
-
+#include "../../Utils/ApiSignature.h"
+#include "../../Utils/GetHost.h"
 namespace Huobi {
 
     class HuobiRestConnection {
@@ -72,7 +73,7 @@ namespace Huobi {
         }
 
         JsonWrapper executeGet(const char* adress, UrlParamsBuilder&builder) {
-//创建请求体
+            //创建请求体
             Request* res = new Request();
             res->method = "GET";
             std::string url;
@@ -85,22 +86,58 @@ namespace Huobi {
             }
             builder.setAdress(url);
             res->setUrl(options.restHost + builder.getAdress());
-          //  res->setPostBody(builder.getPostBody());
-//执行连接,返回内容
+            //  res->setPostBody(builder.getPostBody());
+            //执行连接,返回内容
             std::string sBuffer = ConnectionFactory::execute(res);
-             std::cout<<"sbuffer:"<<std::endl;
-            std::cout<<sBuffer<<std::endl;
-            JsonDocument* djson =new JsonDocument();
+            //             std::cout<<"sbuffer:"<<std::endl;
+            //            std::cout<<sBuffer<<std::endl;
+            JsonDocument* djson = new JsonDocument();
             JsonWrapper json = djson->parseFromString(sBuffer.c_str());
-//检查响应体         
-           
+            //检查响应体         
+
             checkResponse(json);
-           
-          //  delete res;
-            printf("return \n");
+
+            //  delete res;
+
             return json;
 
         }
+
+        JsonWrapper executeGetWithSignature(const char* adress, UrlParamsBuilder&builder) {
+            //创建请求体
+
+            Request* res = new Request();
+            res->method = "GET";
+
+            std::string temp = adress;
+            temp += "?";
+
+            std::string tail = ApiSignature::buildSignaturePath(GetHost(options.restHost), options.apiKey, options.secretKey,
+                    adress, res->method, builder.getAdress().c_str());
+            if (builder.getAdress().empty()) {
+                builder.setAdress(temp + builder.getAdress() + tail);
+            } else {
+                builder.setAdress(temp + builder.getAdress() + "&" + tail);
+            }
+
+            res->setUrl(options.restHost + builder.getAdress());
+
+            //执行连接,返回内容
+            std::string sBuffer = ConnectionFactory::execute(res);
+
+            JsonDocument* djson = new JsonDocument();
+            JsonWrapper json = djson->parseFromString(sBuffer.c_str());
+            
+            //检查响应体         
+            checkResponse(json);
+            printf("checkResponse\n");
+            return json;
+
+        }
+
+
+
+
     };
 }
 

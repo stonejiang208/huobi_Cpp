@@ -21,7 +21,7 @@ namespace Huobi {
     class MarketDetailParser {
     public:
 
-        static MarketDetail parse(JsonWrapper json) {
+        static MarketDetail parse(JsonWrapper& json) {
             MarketDetail marketDetail;
             marketDetail.id = json.getLong("id");
             marketDetail.amount = json.getDecimal("amount");

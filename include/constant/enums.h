@@ -385,6 +385,14 @@ private:
         static ConnectionStateEnum CONNECTED;
         static ConnectionStateEnum CLOSED_ON_ERROR;
     };
+    
+     class DepthSize : public BaseEnumClass<DepthSize> {
+        DEFINE_ENUM_CLASS(DepthSize);
+    public:
+        static DepthSize SIZE_5;
+        static DepthSize SIZE_10;
+        static DepthSize SIZE_20;
+    };
 
 }
 

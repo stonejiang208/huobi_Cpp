@@ -15,7 +15,7 @@
 #define HUOBIMARKETSERVICE_H
 
 #include <string>
-#include "MarketClient.h"
+#include "client/MarketClient.h"
 #include "connection/HuobiRestConnection.h"
 #include "connection/HuobiWebSocketConnection.h"
 
@@ -40,6 +40,7 @@ namespace Huobi {
         const char* REST_MARKET_DEPTH_PATH = "/market/depth";
         const char* REST_MARKET_TRADE_PATH = "/market/trade";
         const char* REST_MARKET_HISTORY_TRADE_PATH = "/market/history/trade";
+
     public:
         const std::string WEBSOCKET_CANDLESTICK_TOPIC = "market.$symbol.kline.$period";
         const std::string WEBSOCKET_MARKET_DETAIL_TOPIC = "market.$symbol.detail";
@@ -56,10 +57,29 @@ namespace Huobi {
         }
 
         std::vector<Candlestick> getCandlestick(const CandlestickRequest& request) override;
+
         void subCandlestick(const SubCandlestickRequest& req, const std::function<void( const CandlestickEvent&) > callback) override;
 
         MarketDetailMerged getMarketDetailMerged(const MarketDetailMergedRequest& request) override;
+
         MarketDetail getMarketDetail(const MarketDetailRequest& request) override;
+
+        void subMarketDetail(const SubMarketDetailRequest& request, const std::function<void( const MarketDetailEvent&) > callback) override;
+
+
+        std::vector<MarketTicker> getTickers() override;
+
+        MarketDepth getMarketDepth(const MarketDepthRequest& request) override;
+
+        void subMarketDepth(const SubMarketDepthRequest& request, const std::function<void( const MarketDepthEvent&) > callback) override;
+
+        MarketTrade getMarketTrade(const MarketTradeRequest& request) override;
+
+        void subMarketTrade(const SubMarketTradeRequest& request, const std::function<void( const MarketTradeEvent&) > callback) override;
+
+        std::vector<MarketTrade> getMarketHistoryTrade(const MarketHistoryTradeRequest& request) override;
+
+        void subMarketBBO(const SubMarketBBORequest& request, const std::function<void( const MarketBBOEvent&) > callback) override;
 
 
     };
