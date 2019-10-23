@@ -110,12 +110,14 @@ namespace Huobi {
 
             uint8_t buf[LWS_PRE + 1024] = {0};
             int m;
+            
             int n = lws_snprintf((char *) buf + LWS_PRE, 1024,
                     "%s", message);
 
             lwsl_user("Sending message %s\n", buf + LWS_PRE);
             //   Logger::WriteLog("[Sub][%d] Send: %s", connectionId, buf + LWS_PRE);
             m = lws_write(wsi, buf + LWS_PRE, n, LWS_WRITE_TEXT);
+//            std::cout<<m<<n<<std::endl;
             if (m < n) {
                 Logger::WriteLog("[Sub][%d] Sending failed", connectionId);
                 lwsl_err("sending failed: %d\n", m);
@@ -266,12 +268,14 @@ namespace Huobi {
                     "/ws/v1", "GET", timeBuf, "");
 
             JsonWriter writer;
+           
             writer.put("SignatureVersion", "2");
             writer.put("op", "auth");
             writer.put("AccessKeyId", op.apiKey);
             writer.put("Signature", signa.c_str());
             writer.put("SignatureMethod", "HmacSHA256");
             writer.put("Timestamp", buf);
+           // std::string  cre='{"SignatureVersion":"2","op":"auth","AccessKeyId":"rfhfg2mkl3-95324847-beb6f633-4a4c0","Signature":"M/miACXku3UPl9ANEnbwoXCT5fVBFvEPdg6RQnXPQr4=","SignatureMethod":"HmacSHA256","Timestamp":"2019-10-23T12:47:25","cid":"1571834845035"}';
             return writer.toJsonString();
         }
 
@@ -363,10 +367,33 @@ namespace Huobi {
                 HuobiOptions& op,
                 std::function < T(JsonWrapper&) > JsonParser) {
 
+            //            HuobiWebSocketConnection* huobiWebSocketConnection = new HuobiWebSocketConnection<T>(commandList, callback, op, JsonParser);
+            //            ConnectionFactory::createWebSocket(huobiWebSocketConnection, op.websocketHost, "/ws");
+
+            createConnection(commandList, callback, op, JsonParser);
+
+        }
+
+        static void createAssetConnection(
+                std::list<std::string>& commandList,
+                std::function<void(const T&) > callback,
+                HuobiOptions& op,
+                std::function < T(JsonWrapper&) > JsonParser) {
+
+            //            HuobiWebSocketConnection* huobiWebSocketConnection = new HuobiWebSocketConnection<T>(commandList, callback, op, JsonParser);
+            //            ConnectionFactory::createWebSocket(huobiWebSocketConnection, op.websocketHost, "/ws");
+            createConnection(commandList, callback, op, JsonParser);
+        }
+
+        static void createConnection(
+                std::list<std::string>& commandList,
+                std::function<void(const T&) > callback,
+                HuobiOptions& op,
+                std::function < T(JsonWrapper&) > JsonParser) {
+
             HuobiWebSocketConnection* huobiWebSocketConnection = new HuobiWebSocketConnection<T>(commandList, callback, op, JsonParser);
             ConnectionFactory::createWebSocket(huobiWebSocketConnection, op.websocketHost, "/ws");
         }
-
 
     };
     template <typename T>

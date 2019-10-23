@@ -18,7 +18,7 @@ namespace Huobi{
     class MarketTradeParser{
     
     public:
-        static std::vector<MarketTrade> parseArray(JsonWrapper json) {
+        static std::vector<MarketTrade> parseArray(JsonWrapper& json) {
             std::vector<MarketTrade> marketTradeVec;
             JsonWrapper data = json.getJsonObjectOrArray("data");
             for (int i = 0; i < data.size(); i++) {
@@ -28,14 +28,17 @@ namespace Huobi{
             return marketTradeVec;
         }
         
-        static MarketTrade parse(JsonWrapper item) {
+        static MarketTrade parse(JsonWrapper& item) {
+           
             MarketTrade trade;
-            trade.price = item.getDecimal("price");
-            trade.amount = item.getDecimal("amount");
-            trade.tradeId = item.getLong("trade-id");
-            trade.ts = item.getLong("ts");
-            trade.id = item.getLong("id");
+            
+            trade.price = item.getDecimal("price");          
+            trade.amount = item.getDecimal("amount");         
+            trade.tradeId = item.getLong("trade-id");             
+            trade.ts = item.getLong("ts");   
+            trade.id = item.getString("id"); 
             trade.direction = TradeDirection::lookup(item.getString("direction"));
+             
             return trade;
         }
     };

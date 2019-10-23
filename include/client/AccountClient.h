@@ -14,7 +14,15 @@
 #ifndef ACCOUNTCLIENT_H
 #define ACCOUNTCLIENT_H
 #include <vector>
+#include <functional>
+
 #include "model/account/Account.h"
+#include "model/account/AccountBalance.h"
+#include "model/account/SubuserAggregateBalance.h"
+#include "model/account/AccountChangeEvent.h"
+#include "req/account/AccountBalanceRequest.h"
+#include "req/account/TransferSubuserRequest.h"
+#include "req/account/SubAccountChangeRequest.h"
 namespace Huobi
 {
 
@@ -22,17 +30,17 @@ namespace Huobi
         
         virtual std::vector<Account> getAccounts() = 0;
 
-//        virtual AccountBalance getAccountBalance(const AccountBalanceRequest& request) = 0;
+        virtual AccountBalance getAccountBalance(const AccountBalanceRequest& request) = 0;
+
+        virtual long transferSubuser(const TransferSubuserRequest& request) = 0;
+
+        virtual std::vector<AccountBalance> getSubuserAccountBalance(long subuserId) = 0;
+
+        virtual std::vector<SubuserAggregateBalance> getSubuserAggregateBalance() = 0;
+
+        virtual void subAccounts(const SubAccountChangeRequest& request,const std::function<void( const AccountChangeEvent&) > callback) = 0;
 //
-//        virtual long transferSubuser(const TransferSubuserRequest& request) = 0;
-//
-//        virtual std::vector<AccountBalance> getSubuserAccountBalance(long subuserId) = 0;
-//
-//        virtual std::vector<SubuserAggregateBalance> getSubuserAggregateBalance() = 0;
-//
-//        virtual void subAccounts(const SubAccountChangeRequest& request, ResponseCallback<AccountChangeEvent> callback) = 0;
-//
-//        virtual void reqAccounts(ResponseCallback<AccountReq> callback) = 0;
+   //    virtual void reqAccounts(ResponseCallback<AccountReq> callback) = 0;
 
     };
 

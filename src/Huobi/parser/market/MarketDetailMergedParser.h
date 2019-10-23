@@ -29,8 +29,10 @@ namespace Huobi {
             marketDetailMerged.low = json.getDecimal("low");
             marketDetailMerged.count = json.getLong("count");
             marketDetailMerged.vol = json.getDecimal("vol");
-            marketDetailMerged.ask = PriceLevelParser::parse(json.getJsonObjectOrArray("ask"));
-            marketDetailMerged.bid = PriceLevelParser::parse(json.getJsonObjectOrArray("bid"));
+            JsonWrapper ask=json.getJsonObjectOrArray("ask");
+            JsonWrapper bid=json.getJsonObjectOrArray("bid");
+            marketDetailMerged.ask = PriceLevelParser::parse(ask);
+            marketDetailMerged.bid = PriceLevelParser::parse(bid);
 
             return marketDetailMerged;
         }

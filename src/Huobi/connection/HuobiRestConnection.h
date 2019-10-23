@@ -127,15 +127,43 @@ namespace Huobi {
 
             JsonDocument* djson = new JsonDocument();
             JsonWrapper json = djson->parseFromString(sBuffer.c_str());
-            
+
             //检查响应体         
             checkResponse(json);
-            printf("checkResponse\n");
+
             return json;
 
         }
 
+        JsonWrapper executePostWithSignature(const char* adress, UrlParamsBuilder&builder) {
+            //创建请求体
 
+            Request* res = new Request();
+            res->method = "POST";
+
+            std::string temp = adress;
+            temp += "?";
+
+            std::string tail = ApiSignature::buildSignaturePath(GetHost(options.restHost), options.apiKey, options.secretKey,
+                    adress, res->method, builder.getAdress().c_str());
+
+            builder.setAdress(temp + builder.getAdress() + tail);
+            res->setPostBody(builder.getPostBody());
+
+            res->setUrl(options.restHost + builder.getAdress());
+
+            //执行连接,返回内容
+            std::string sBuffer = ConnectionFactory::execute(res);
+
+            JsonDocument* djson = new JsonDocument();
+            JsonWrapper json = djson->parseFromString(sBuffer.c_str());
+
+            //检查响应体         
+            checkResponse(json);
+
+            return json;
+
+        }
 
 
     };

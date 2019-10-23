@@ -20,7 +20,7 @@ namespace Huobi {
     class MarketDepthParser {
     public:
 
-        static MarketDepth parse(JsonWrapper json) {
+        static MarketDepth parse(JsonWrapper& json) {
             MarketDepth price;
             price.version = json.getLongOrDefault("version",0);
             price.ts = json.getLongOrDefault("ts",0);

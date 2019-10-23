@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 
-//#include "Huobi/HuobiClient.h"
-//#include<iostream>
-
 #include "client/AccountClient.h"
 #include "../../src/options/HuobiOptions.h"
 #include "../../src/Huobi/HuobiAccountService.h"
@@ -32,19 +29,11 @@ int main(int argc, char** argv) {
     op.apiKey = "xxx";
     op.secretKey = "xxx";
     AccountClient* client_account = new HuobiAccountService(op);
-    AccountBalanceRequest request(6012157);
-    AccountBalance accountBalance = client_account->getAccountBalance(request);
+    TransferSubuserRequest request(12345,"eos",Decimal("0.00002"),TransferMasterType::master_transfer_out);
+    long id = client_account->transferSubuser(request);
 
-    cout << "id " << accountBalance.id << endl;
-    cout << "type " << accountBalance.type.getValue() << endl;
-    cout << "state " << accountBalance.state.getValue() << endl;
-
-    for (Balance balance : accountBalance.list) {
-        cout << "currency: " << balance.currency << endl;
-        cout << "balance: " << balance.balance << endl;
-        cout << "type: " << balance.type.getValue() << endl;
-
-    }
+    cout << "id " << id << endl;
+    
 
 
 }

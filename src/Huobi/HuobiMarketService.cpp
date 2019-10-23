@@ -167,7 +167,8 @@ namespace Huobi {
         JsonWrapper json = restConnection->executeGet(REST_MARKET_TRADE_PATH, builder);
         JsonWrapper tick = json.getJsonObjectOrArray("tick");
         JsonWrapper data = tick.getJsonObjectOrArray("data");
-        MarketTrade marketTrade = MarketTradeParser::parse(data);
+        JsonWrapper item =data.getJsonObjectAt(0);
+        MarketTrade marketTrade = MarketTradeParser::parse(item);
         return marketTrade;
     }
 

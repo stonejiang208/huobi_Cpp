@@ -19,7 +19,7 @@ namespace Huobi
     class PriceLevelParser {
     public:
 
-        static PriceLevel parse(JsonWrapper json) {
+        static PriceLevel parse(JsonWrapper& json) {
             PriceLevel priceLevel;
             priceLevel.price = json.getDecimalAt(0);
             priceLevel.amount = json.getDecimalAt(1);

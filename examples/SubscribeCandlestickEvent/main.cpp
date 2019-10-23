@@ -5,7 +5,7 @@
  */
 
 #include <iostream>
-#include "Huobi/HuobiClient.h"
+//#include "Huobi/HuobiClient.h"
 
 
 using namespace Huobi;

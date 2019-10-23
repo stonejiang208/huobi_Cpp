@@ -49,6 +49,17 @@ namespace Huobi {
         const char* REQ_ACCOUNT_TOPIC = "accounts.list";
     public:
         std::vector<Account> getAccounts() override;
+        
+        AccountBalance getAccountBalance(const AccountBalanceRequest& request) override;
+        
+        long transferSubuser(const TransferSubuserRequest& request) override;
+
+        std::vector<AccountBalance> getSubuserAccountBalance(long subuserId) override;
+
+        std::vector<SubuserAggregateBalance> getSubuserAggregateBalance() override;
+
+        void subAccounts(const SubAccountChangeRequest& request, const std::function<void( const AccountChangeEvent&) > callback) override;
+        //
     };
 }
 
