@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
     
      HuobiOptions op;
     //CandlestickRequest req("btcusdt",CandlestickInterval::day1);
-     op.apiKey="rfhfg2mkl3-95324847-beb6f633-4a4c0";
-     op.secretKey="c400ae0f-5df9d7af-4c8ff330-92866";
+     op.apiKey="xxx";
+     op.secretKey="xxx";
     AccountClient* client = new HuobiAccountService(op);   
     SubAccountChangeRequest req;
     client->subAccounts(req, [](AccountChangeEvent event) {
